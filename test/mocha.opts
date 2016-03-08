@@ -1,0 +1,5 @@
+--compilers coffee:coffee-script/register
+--require chai
+--reporter spec
+--ui bdd
+
