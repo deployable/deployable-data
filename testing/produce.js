@@ -22,36 +22,27 @@ var type = require('./avro.env.js')
 setInterval(function(){
   if(zmqsock._zmq.pending > 0)
     console.log('server',zmqsock._zmq.pending)
-}, 56)
+}, 500)
 
-setInterval(function(){
+
+var runit = function runit(tag){
   var msg = _.sampleSize(SET_HEX,4).join('')
   console.log(msg)
   var uuidbuf = new Buffer(16)
-  uuid.v4(null,uuidbuf);
+  uuid.v4(null,uuidbuf)
   var message = type.toBuffer({
     kind:  'internal',
-    name:  msg,
+    name:  tag+msg,
     other: 'other',
     date:  Date.now(),
     id:  uuidbuf
   })
   sock.send(message)
-}, 1)
+}
 
-setInterval(function(){
-  var msg = _.sampleSize(SET_HEX,4).join('')
-  console.log(msg)
-  var uuidbuf = new Buffer(16)
-  uuid.v4(null,uuidbuf);
-  var message = type.toBuffer({
-    kind:  'internal',
-    name:  msg+msg+msg+msg+msg+msg,
-    other: 'other',
-    date:  Date.now(),
-    id:  uuidbuf
-  })
-  sock.send(message)
-}, 1)
+
+setInterval(function(){runit('a')}, 499)
+
+setInterval(function(){runit('b')}, 501)
 
 
