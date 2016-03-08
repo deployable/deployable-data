@@ -1,0 +1,24 @@
+{
+  "name": "data-nanotest",
+  "version": "1.0.0",
+  "description": "testing nanomsg for data access platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "data",
+    "nanomsg"
+  ],
+  "author": "matt@deployable.co",
+  "license": "MIT",
+  "dependencies": {
+    "avsc": "^3.4.1",
+    "bluebird": "^3.3.4",
+    "debug": "^2.2.0",
+    "lodash": "^4.6.1",
+    "nanomsg": "^3.1.0",
+    "uuid": "^2.0.1",
+    "zmq": "^2.14.0"
+  }
+}
