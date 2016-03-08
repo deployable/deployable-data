@@ -13,12 +13,20 @@
   "author": "matt@deployable.co",
   "license": "MIT",
   "dependencies": {
-    "avsc": "^3.4.1",
-    "bluebird": "^3.3.4",
-    "debug": "^2.2.0",
-    "lodash": "^4.6.1",
-    "nanomsg": "^3.1.0",
-    "uuid": "^2.0.1",
-    "zmq": "^2.14.0"
+    "avsc": "~3.4.1",
+    "bluebird": "~3.3.4",
+    "debug": "~2.2.0",
+    "express": "~4.13.4",
+    "lodash": "~4.6.1",
+    "nanomsg": "~3.1.0",
+    "uuid": "~2.0.1",
+    "zmq": "~2.14.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coffee-script": "^1.10.0",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3",
+    "supertest": "^1.2.0"
   }
 }
