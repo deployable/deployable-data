@@ -25,6 +25,7 @@ router.get('/',function(req, res){
   res.json({ app: 'data' })
 })
 
+// The following routes require a store
 router.param('store', DataAPI.storeParamCheck)
 
 router.get( '/store/:store', handler(dataApi, dataApi.schema, config.get('timeout.read')) )
@@ -53,6 +54,7 @@ router.delete('/store/:store/schema', function(req, res, next){
   .catch(next)
 })
 
+// The following routes require an entity
 router.param('entity', DataAPI.entityParamCheck)
 
 router.post(
@@ -65,12 +67,6 @@ router.get(
   '/store/:store/entity/:entity', 
   handler( dataApi, dataApi.read, config.get('timeout.read') )
 )
-
-//   function(req, res, next){
-//   dataApi.read( req.params.store, req.params.entity ).then(function(result){
-//     res.json({ action:'read', data:result.fields })
-//   }).timeout(config.get('timeout.read')).catch(next)
-// })
 
 router.patch(
   '/store/:store/entity/:entity',
@@ -89,27 +85,27 @@ router.delete(
 
 
 router.use(function(error, req, res, next){
-  if (!error.status){
-      logger.error(error)
-      error.status = 500
-  }
-  let response = {
-    error: {
-      status:   error.status,
-      simple:   error.simple,
-      message:  error.message,
-      code:     error.code,
-      field:    error.field,
-      value:    error.value
-    }
-  }
-  if ( process.env.NODE_ENV !== 'production' ) response.error.stack = error.stack
+  if (!error.status) error.status = 500
+  if (error.status >= 500 ) logger.error(error)
+  let response = { error: error }
+  // {
+  //   error: {
+  //     status:   error.status,
+  //     simple:   error.simple,
+  //     message:  error.message,
+  //     code:     error.code,
+  //     field:    error.field,
+  //     value:    error.value
+  //   }
+  // }
+  if ( process.env.NODE_ENV === 'production' ) delete error.stack
   res.status(error.status).json(response)
 })
 
 router.use(function(req,res){
   let err = Errors.HttpError.create(404)
   debug('404 handler', err.message)
+  delete err.stack
   res.status(err.status).json({ error: err })
 })
 
