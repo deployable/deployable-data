@@ -4,7 +4,8 @@
   "description": "testing nanomsg for data access platform",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test:coverage": "mocha -R html-cov > docs/test_coverage.html"
   },
   "keywords": [
     "data",
@@ -13,20 +14,23 @@
   "author": "matt@deployable.co",
   "license": "MIT",
   "dependencies": {
-    "avsc": "~3.4.1",
-    "bluebird": "~3.3.4",
-    "debug": "~2.2.0",
-    "express": "~4.13.4",
-    "lodash": "~4.6.1",
-    "nanomsg": "~3.1.0",
-    "uuid": "~2.0.1",
-    "zmq": "~2.14.0"
+    "avsc": "4.1.10",
+    "bluebird": "3.4.6",
+    "body-parser": "1.15.2",
+    "debug": "^2.0",
+    "express": "~4.14.0",
+    "lodash": "~4.17.2",
+    "mongodb": "2.2.12",
+    "nanomsg": "3.2.3",
+    "uuid": "~3.0.1",
+    "zmq": "2.15.3"
   },
   "devDependencies": {
+    "blanket": "^1.2.3",
     "chai": "^3.5.0",
     "coffee-script": "^1.10.0",
-    "mocha": "^2.4.5",
+    "mocha": "^3.2.0",
     "sinon": "^1.17.3",
-    "supertest": "^1.2.0"
+    "supertest": "^2.0.1"
   }
 }

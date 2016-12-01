@@ -1,5 +1,5 @@
 --compilers coffee:coffee-script/register
---require chai
+--require test/fixture/mocha_setup
 --reporter spec
 --ui bdd
 

@@ -1,0 +1,7 @@
+
+timeout:
+  create: 200
+  read: 200
+  update: 200
+  replace: 200
+  delete: 200

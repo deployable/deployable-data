@@ -1,8 +1,9 @@
-app = require('./express')
+const app = require('./express')
+const logger = console
 
-app.listen( 3000, function(err,res){
-  if (err) return console.error(err)
-  console.log( 'listening' )
+app.listen( 3000, function(err){
+  if (err) return logger.error(err)
+  logger.info( 'Listening 3000' )
 })
 
 module.exports = app

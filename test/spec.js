@@ -18,7 +18,7 @@ describe('web js',function(){
     request(app)
     .get('/api/')
     .then(function(res){
-      expect( res.res.body ).to.eql({ message: 'hello'  })
+      expect( res.res.body ).to.eql({ message: 'hello' })
       done()
     }) 
   })
