@@ -7,6 +7,11 @@ GEM
       ffi-rzmq-core (>= 1.0.1)
     ffi-rzmq-core (1.0.4)
       ffi (~> 1.9)
+    nanomsg (0.6.0)
+    nn-core (0.4.0)
+      ffi
+      rake
+    rake (11.3.0)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -26,4 +31,9 @@ PLATFORMS
 
 DEPENDENCIES
   ffi-rzmq
+  nanomsg
+  nn-core
   rspec
+
+BUNDLED WITH
+   1.13.6
