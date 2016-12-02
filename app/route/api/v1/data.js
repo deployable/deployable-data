@@ -21,12 +21,15 @@ const handler = (object, promiseHandler, timeout) => {
 }
 
 
-router.get('/',function(req, res){
-  res.json({ app: 'data' })
-})
+const app_info = { 
+  name: config.get('package.name'),
+  version: config.get('package.version')
+}
+router.get('/', (req, res) => res.json({ app: app_info }) )
 
-// The following routes require a store
+router.use(bodyParser.json())
 router.param('store', DataAPI.storeParamCheck)
+router.param('entity', DataAPI.entityParamCheck)
 
 router.get( '/store/:store', handler(dataApi, dataApi.schema, config.get('timeout.read')) )
 
@@ -38,7 +41,6 @@ router.get('/store/:store/schema', function(req, res, next){
   }).timeout(config.get('timeout.read')).catch(next)
 })
 
-router.use(bodyParser.json())
 
 router.put('/store/:store/schema', function(req, res, next){
   dataApi.schema( req.params.store )
@@ -55,7 +57,6 @@ router.delete('/store/:store/schema', function(req, res, next){
 })
 
 // The following routes require an entity
-router.param('entity', DataAPI.entityParamCheck)
 
 router.post(
   '/store/:store/entity/:entity', 
@@ -83,25 +84,16 @@ router.delete(
   handler( dataApi, dataApi.delete, config.get('timeout.update') )
 )
 
-
+// Generic error handler
 router.use(function(error, req, res, next){
   if (!error.status) error.status = 500
   if (error.status >= 500 ) logger.error(error)
   let response = { error: error }
-  // {
-  //   error: {
-  //     status:   error.status,
-  //     simple:   error.simple,
-  //     message:  error.message,
-  //     code:     error.code,
-  //     field:    error.field,
-  //     value:    error.value
-  //   }
-  // }
   if ( process.env.NODE_ENV === 'production' ) delete error.stack
   res.status(error.status).json(response)
 })
 
+// Fall back API 404
 router.use(function(req,res){
   let err = Errors.HttpError.create(404)
   debug('404 handler', err.message)

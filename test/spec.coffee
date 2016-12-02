@@ -3,9 +3,9 @@ app     = require '../app/express'
 request = require 'supertest'
 
 
-describe 'data', ->
+describe 'App', ->
 
-  it 'gets /', ()->
+  it 'should get home page from GET /', ()->
     request app
     .get '/'
     .then (result)->
@@ -34,9 +34,9 @@ describe 'data', ->
       expect( result.res.text ).to.equal 'something'
 
 
-  describe '/api', ->
+  describe 'Api Endpoints - /api', ->
 
-    it 'gets /api/', ()->
+    it 'should recieve hello for GET /', ()->
       request app
       .get '/api/'
       .then (result)->
@@ -44,16 +44,19 @@ describe 'data', ->
         expect( result.res.body ).to.eql message: 'hello'
 
 
-    describe '/api/v1/data', ->
+    describe 'Data Api V1 - /api/v1/data', ->
 
       app_url_prefix = "/api/v1/data"
 
-      it 'gets /', ()->
+      it 'should recieve app info for GET /', ()->
         request app
         .get "#{app_url_prefix}/"
         .then (result)->
           expect( result.res.statusCode ).to.equal 200
-          expect( result.res.body ).to.eql app: 'data'
+          expect( result.res.body ).to.contain.key('app')
+          app_info = result.res.body.app
+          expect( app_info ).to.have.property('name').and.equal('data-nanotest')
+          expect( app_info ).to.have.property('version').and.match(/^\d+\.\d+\.\d+/)
 
       entity_url = "#{app_url_prefix}/store/a/entity/newentity"
       entity_data = { foo: 'bar' }
@@ -104,8 +107,9 @@ describe 'data', ->
         .then (result)->
           expect( result.res.text ).to.match /^\{/
           expect( result.res.statusCode ).to.eql 404
-          expect( result.res.body ).to.eql
-            error:
-              message: 'Object not found'
-              name: 'HttpError'
-              status: 404
+          expect( result.res.body ).to.contain.key('error')
+          err = result.res.body.error
+          expect( err ).to.have.property('message').and.equal('Object not found')
+          expect( err ).to.have.property('name').and.equal('HttpError')
+          expect( err ).to.have.property('status').and.equal(404)
+
