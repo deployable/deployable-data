@@ -3,7 +3,7 @@ app     = require '../app/express'
 request = require 'supertest'
 
 
-describe 'App', ->
+describe 'App Requests', ->
 
   it 'should get home page from GET /', ()->
     request app
