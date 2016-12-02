@@ -3,7 +3,7 @@ DataStoreMemory     = require '../lib/data_store_memory'
  EntityMissingError,
  EntityExistsError,
  StoreError,
- EntityError} = require('../lib/data-errors')
+ EntityError} = require('../lib/errors_data')
 
 describe 'Unit::DataStoreMemory', ->
 

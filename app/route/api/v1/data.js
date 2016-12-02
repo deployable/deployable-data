@@ -3,7 +3,7 @@ const debug       = require('debug')('dply:data:route:api:v1:data')
 const router      = require('express').Router()
 const bodyParser  = require('body-parser')
 const _           = require('lodash')
-const Errors      = require('../../../../lib/dply-errors')
+const Errors      = require('../../../../lib/errors_dply')
 const config      = require('../../../../lib/config').instance()
 const logger      = console
 
