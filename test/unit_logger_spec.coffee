@@ -10,6 +10,9 @@ describe 'Unit::Logger', ->
     it 'should create a Logger instance', ()->
       expect( new Logger() ).to.be.an.instanceOf(Logger)
 
+    it 'should set the Class/singlton log level', ()->
+      expect( Logger.setLevel(30) ).to.be.ok
+
     describe 'stdout testing', ->
 
       inspector = null
@@ -122,7 +125,7 @@ describe 'Unit::Logger', ->
       inspector = null
 
       beforeEach ->
-        logger = new Logger({ level: 60 })
+        logger = new Logger({ level: 50 })
         inspector = stdout.inspect()
 
       afterEach ->
@@ -167,26 +170,41 @@ describe 'Unit::Logger', ->
 
     describe 'All log levels disabled', ->
 
+      inspector = null
+
+      afterEach ->
+        inspector.restore()
+
       beforeEach ->
         logger = new Logger({ level: 0 })
+        inspector = stdout.inspect()
 
       it 'should have .trace', ()->
         logger.trace('a trace')
+        inspector.restore()
+        expect( inspector.output.length ).to.equal 0
 
       it 'should have .debug', ()->
         logger.debug('a debug')
+        inspector.restore()
+        expect( inspector.output.length ).to.equal 0
       
       it 'should have .info', ()->
         logger.info('an info')
+        inspector.restore()
+        expect( inspector.output.length ).to.equal 0
       
       it 'should have .warn', ()->
         logger.warn('a warn')
+        inspector.restore()
+        expect( inspector.output.length ).to.equal 0
       
       it 'should have .error', ()->
         logger.error('an error')
+        inspector.restore()
+        expect( inspector.output.length ).to.equal 0
 
       it 'should still log ', ()->
-        inspector = stdout.inspect()
         logger.log('a log')
         inspector.restore()
         expect( inspector.output[0] ).to.match /ALL   default a log/
