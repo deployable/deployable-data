@@ -13,6 +13,7 @@ const dataApi = new DataAPI()
 // A Promise request handler
 const handler = (object, promiseHandler, timeout) => {
   return function(req, res, next){
+    debug('handler', req.url, process.env.NODE_ENV)
     promiseHandler.call(object, req, res)
       .timeout(timeout)
       .then(data => res.json(data))
@@ -31,30 +32,38 @@ router.use(bodyParser.json())
 router.param('store', DataAPI.storeParamCheck)
 router.param('entity', DataAPI.entityParamCheck)
 
-router.get( '/store/:store', handler(dataApi, dataApi.schema, config.get('timeout.read')) )
+// ### Schema
 
-//    res.json({ store: data.store, action:'read', info:data.info })
+router.post(
+  '/store/:store/schema', 
+  handler( dataApi, dataApi.createSchema, config.get('timeout.create') )
+)
+   
+router.get(
+  '/store/:store/schema', 
+  handler( dataApi, dataApi.readSchema, config.get('timeout.read') )
+    //res.json({ store: data.store, action:'read', info:data.info })
+)
 
-router.get('/store/:store/schema', function(req, res, next){
-  dataApi.schema( req.params.store ).then(function(data){
-    res.json({ store: data.store, action:'read', info:data.info })
-  }).timeout(config.get('timeout.read')).catch(next)
-})
+router.patch(
+  '/store/:store/schema',
+  handler( dataApi, dataApi.updateSchema, config.get('timeout.update') )
+)
+
+router.put(
+  '/store/:store/schema',
+  handler( dataApi, dataApi.replaceSchema, config.get('timeout.replace') )
+)
+ // .then(result => res.json({ store: result.store, status:'updated', info:result.info }))
+
+router.delete(
+  '/store/:store/schema', 
+  handler( dataApi, dataApi.deleteSchema, config.get('timeout.delete') )
+//  .then(result => res.json({ store: result.store, action:'deleted', info:result.info }))
+)
 
 
-router.put('/store/:store/schema', function(req, res, next){
-  dataApi.schema( req.params.store )
-  .then(result => res.json({ store: result.store, action:'read', info:result.info }))
-  .timeout(config.get('timeout.read'))
-  .catch(next)
-})
-
-router.delete('/store/:store/schema', function(req, res, next){
-  dataApi.read( req.params.store, req.params.entity )
-  .then(result => res.json({ store: result.store, action:'read', info:result.info }))
-  .timeout(config.get('timeout.read'))
-  .catch(next)
-})
+// ### Entity
 
 // The following routes require an entity
 
@@ -89,6 +98,7 @@ router.use(function(error, req, res, next){
   if (!error.status) error.status = 500
   if (error.status >= 500 ) logger.error(error)
   let response = { error: error }
+  debug('err', req.url, process.env.NODE_ENV)
   if ( process.env.NODE_ENV === 'production' ) delete error.stack
   res.status(error.status).json(response)
 })

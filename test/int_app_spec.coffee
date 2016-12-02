@@ -258,6 +258,70 @@ describe 'App Requests', ->
             expect( err ).to.have.property('name').and.equal('HttpError')
             expect( err ).to.have.property('status').and.equal(400)
 
+
+      describe 'errors with NODE_ENV', ->
+
+        old_node_env = null
+
+        before ->
+          old_node_env = process.env.NODE_ENV
+          process.env.NODE_ENV = 'production'
+
+        after ->
+          process.env.NODE_ENV = old_node_env
+
+        it 'remove stack from production error response', ->
+          process.env.NODE_ENV = 'production'
+          p = request app
+          .get "#{app_url_prefix}/store/ab/entity/new£ntity"
+          .then (result)->
+            expect( result.res.body )
+              .to.have.property 'error'
+              .and.to.have.all.keys 'message', 'name', 'status'
+          p
+
+
+      describe 'schema', ->
+
+        it 'create', ->
+          request app
+          .post "#{app_url_prefix}/store/a/schema"
+          .send { afield: 'text' }
+          .then (result)->
+            expect( result.res.text ).to.match /^\{/
+            expect(result.res.body ).to.eql { status: 'dunno', store: 'a' }
+
+        it 'read', ->
+          request app
+          .get "#{app_url_prefix}/store/a/schema"
+          .then (result)->
+            expect( result.res.text ).to.match /^\{/
+            expect(result.res.body ).to.eql { status: 'dunno', store: 'a' }
+
+        it 'update', ->
+          request app
+          .patch "#{app_url_prefix}/store/a/schema"
+          .send { newfield: 'text' }
+          .then (result)->
+            expect( result.res.text ).to.match /^\{/
+            expect(result.res.body ).to.eql { status: 'dunno', store: 'a' }
+
+        it 'replace', ->
+          request app
+          .put "#{app_url_prefix}/store/a/schema"
+          .send { afield: 'text' }
+          .then (result)->
+            expect( result.res.text ).to.match /^\{/
+            expect(result.res.body ).to.eql { status: 'dunno', store: 'a' }
+
+        it 'delete', ->
+          request app
+          .delete "#{app_url_prefix}/store/a/schema"
+          .then (result)->
+            expect( result.res.text ).to.match /^\{/
+            expect(result.res.body ).to.eql { status: 'dunno', store: 'a' }
+
+
     describe 'Api V1 - /api/v1/teapot', ->
 
       it 'should have a handle, and be short and stout', ->

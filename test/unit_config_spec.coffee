@@ -1,5 +1,7 @@
-Config = require '../lib/config'
-path   = require('path')
+Config      = require '../lib/config'
+path        = require 'path'
+{KeyError}  = require '../lib/errors_dply'
+
 
 describe 'Unit::Config', ->
 
@@ -30,15 +32,24 @@ describe 'Unit::Config', ->
     it 'should get a config value', ->
       expect( config.get('testing') ).to.be.true
     
-    it 'should throw on missing config value', ->
+    it 'should set a config value', ->
       expect( config.set('whatever',true) ).to.be.ok
       expect( config.get('whatever') ).to.be.true
     
-    it 'should set some state', ->
-      expect( config.setState('whatever', true) ).to.be.ok
+    it 'should throw on missing config value', ->
+      fn = -> config.get('whatever')
+      expect( fn ).to.throw(KeyError, /Unknown config key/)
 
-    it 'should get some state', ->
-      config.setState('whatever', true)
-      expect( config.getState('whatever') ).to.be.true
 
-    
+    describe 'state', ->
+
+      it 'should set some state', ->
+        expect( config.setState('whatever', true) ).to.be.ok
+
+      it 'should get some state', ->
+        config.setState('whatever', true)
+        expect( config.getState('whatever') ).to.be.true
+
+      it 'should throw on missing state value', ->
+        fn = -> config.getState('whatever')
+        expect( fn ).to.throw(KeyError, /Unknown state key/)
