@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "test:coverage": "mocha -R html-cov > docs/test_coverage.html"
+    "test:int": "mocha test/int_*",
+    "test:unit": "mocha test/unit_*",
+    "test:coverage": "istanbul cover _mocha"
   },
   "keywords": [
     "data",
@@ -26,10 +28,11 @@
     "zmq": "2.15.3"
   },
   "devDependencies": {
-    "blanket": "^1.2.3",
     "chai": "^3.5.0",
     "coffee-script": "^1.10.0",
+    "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
+    "mocha-lcov-reporter": "^1.2.0",
     "sinon": "^1.17.3",
     "supertest": "^2.0.1"
   }
