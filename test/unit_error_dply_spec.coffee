@@ -77,3 +77,14 @@ describe 'Unit::Error::Dply', ->
       expect( err.name ).to.equal 'KeyError'
       expect( err.stack ).to.be.ok
       expect( err.key ).to.equal 'akey'
+      expect( String(err) ).to.equal 'KeyError: msg - akey'
+
+    it 'should create an error without key', ->
+      err = new Errors.KeyError('msg')
+      expect( err ).to.be.an.instanceOf Error
+      expect( err.message ).to.equal 'msg'
+      expect( err.name ).to.equal 'KeyError'
+      expect( err.stack ).to.be.ok
+      expect( err.key ).to.be.undefined
+      expect( String(err) ).to.equal 'KeyError: msg'
+

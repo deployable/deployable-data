@@ -10,8 +10,18 @@ describe 'Unit::Logger', ->
     it 'should create a Logger instance', ()->
       expect( new Logger() ).to.be.an.instanceOf(Logger)
 
-    it 'should set the Class/singlton log level', ()->
+    it 'should set the Class/singleton log level', ()->
       expect( Logger.setLevel(30) ).to.be.ok
+
+    it 'should set the Class/singleton log level', ()->
+      expect( Logger.setLevel('info') ).to.be.ok
+
+    it 'should set the Class/singleton log level', ()->
+      expect( Logger.setLevel('INFO') ).to.be.ok
+
+    it 'should set the Class/singleton log level', ()->
+      fn = -> Logger.setLevel('bope')
+      expect( fn ).to.throw Error
 
     describe 'stdout testing', ->
 
@@ -120,6 +130,32 @@ describe 'Unit::Logger', ->
 
     logger = null
 
+    describe 'set levels', ->
+
+      beforeEach ->
+        logger = new Logger()
+      
+      it 'should set a level', ->
+        logger.setLevel(30)
+
+      it 'should set a level', ->
+        logger.setLevel('30')
+
+      it 'should set a level', ->
+        logger.setLevel('DEBUG')
+
+      it 'should set a level', ->
+        logger.setLevel('fatal')
+
+      it 'should set a level', ->
+        fn = -> logger.setLevel(2)
+        expect( fn ).to.throw(Error, /No log level/)
+
+      it 'should set a level', ->
+        fn = -> logger.level = 2
+        expect( fn ).to.throw(Error, /No log level/)
+
+
     describe 'All log levels enabled', ->
 
       inspector = null
@@ -176,7 +212,7 @@ describe 'Unit::Logger', ->
         inspector.restore()
 
       beforeEach ->
-        logger = new Logger({ level: 0 })
+        logger = new Logger({ level: 'FATAL' })
         inspector = stdout.inspect()
 
       it 'should have .trace', ()->
