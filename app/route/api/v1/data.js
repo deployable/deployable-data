@@ -93,10 +93,10 @@ router.delete(
   handler( dataApi, dataApi.delete, config.get('timeout.update') )
 )
 
-// Generic error handler
+// Generic API error handler
 router.use(function(error, req, res, next){
   if (!error.status) error.status = 500
-  if (error.status >= 500 ) logger.error(error)
+  if (error.status >= 500 ) logger.error('Express handled unknown error', error, error.stack)
   let response = { error: error }
   debug('err', req.url, process.env.NODE_ENV)
   if ( process.env.NODE_ENV === 'production' ) delete error.stack
