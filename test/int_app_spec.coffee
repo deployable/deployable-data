@@ -242,9 +242,9 @@ describe 'App Requests', ->
             expect( result.res.statusCode ).to.eql 400
             expect( result.res.body ).to.contain.key('error')
             err = result.res.body.error
-            expect( err ).to.have.property('message').and.equal('Store name must be alpha numeric')
-            expect( err ).to.have.property('name').and.equal('HttpError')
-            expect( err ).to.have.property('status').and.equal(400)
+            expect( err ).to.have.property('message').and.match /Store name must be alpha numeric/
+            expect( err ).to.have.property('name').and.equal 'HttpError'
+            expect( err ).to.have.property('status').and.equal 400
 
         it 'should error on bad entity', ()->
           request app
@@ -254,7 +254,7 @@ describe 'App Requests', ->
             expect( result.res.statusCode ).to.eql 400
             expect( result.res.body ).to.contain.key('error')
             err = result.res.body.error
-            expect( err ).to.have.property('message').and.equal('Entity must be alpha numeric')
+            expect( err ).to.have.property('message').and.match /Entity must be alpha numeric/
             expect( err ).to.have.property('name').and.equal('HttpError')
             expect( err ).to.have.property('status').and.equal(400)
 

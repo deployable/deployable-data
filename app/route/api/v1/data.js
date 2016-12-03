@@ -8,7 +8,7 @@ const config      = require('../../../../lib/config').instance()
 const logger      = console
 
 const DataAPI = require('../../../../lib/data_api')
-const dataApi = new DataAPI()
+const dataApi = new DataAPI('memory')
 
 // A Promise request handler
 const handler = (object, promiseHandler, timeout) => {
