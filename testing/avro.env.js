@@ -1,5 +1,4 @@
-var avro = require('avsc')
-module.exports = avro.parse({
+module.exports = require('avsc').parse({
   name: 'Environment',
   type: 'record',
   fields: [
