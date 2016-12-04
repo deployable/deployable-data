@@ -23,6 +23,20 @@ describe 'Unit::Validate', ->
             expect( Validate.type('a', type_str, name_str) ).to.be.false
 
 
+        describe 'Error', ->
+
+          it 'should validate an array', ->
+            expect( Validate.typeMessage([], type_str, name_str) ).to.be.undefined
+
+          it 'should return msg on non array with name', ->
+            fn = Validate.typeMessage('', type_str, name_str)
+            expect( fn ).to.equal 'wakka is not an array'
+
+          it 'should return generic msg on non array without name', ->
+            fn = Validate.typeMessage('', type_str)
+            expect( fn ).to.equal 'Type is not array'
+
+
         describe 'Throw', ->
 
           it 'should validate an array', ->
@@ -36,19 +50,6 @@ describe 'Unit::Validate', ->
             fn = -> Validate.typeThrow('', type_str)
             expect( fn ).to.throw ValidationError, 'Type is not array'
 
-
-        describe 'Error', ->
-
-          it 'should validate an array', ->
-            expect( Validate.typeError([], type_str, name_str) ).to.be.undefined
-
-          it 'should return msg on non array with name', ->
-            fn = Validate.typeError('', type_str, name_str)
-            expect( fn ).to.equal 'wakka is not an array'
-
-          it 'should return generic msg on non array without name', ->
-            fn = Validate.typeError('', type_str)
-            expect( fn ).to.equal 'Type is not array'
 
 
       describe 'Boolean', ->
@@ -65,6 +66,20 @@ describe 'Unit::Validate', ->
             expect( Validate.type('a', type_str, name_str) ).to.be.false
 
 
+        describe 'Message', ->
+
+          it 'should validate an boolean', ->
+            expect( Validate.typeMessage(false, type_str, name_str) ).to.be.undefined
+
+          it 'should return msg on non boolean with name', ->
+            fn = Validate.typeMessage('', type_str, name_str)
+            expect( fn ).to.equal 'michale is not a boolean'
+
+          it 'should return generic msg on non boolean without name', ->
+            fn = Validate.typeMessage('', type_str)
+            expect( fn ).to.equal 'Type is not boolean'
+
+
         describe 'Throw', ->
 
           it 'should validate an boolean', ->
@@ -78,19 +93,6 @@ describe 'Unit::Validate', ->
             fn = -> Validate.typeThrow('', type_str)
             expect( fn ).to.throw ValidationError, 'Type is not boolean'
 
-
-        describe 'Error', ->
-
-          it 'should validate an boolean', ->
-            expect( Validate.typeError(false, type_str, name_str) ).to.be.undefined
-
-          it 'should return msg on non boolean with name', ->
-            fn = Validate.typeError('', type_str, name_str)
-            expect( fn ).to.equal 'michale is not a boolean'
-
-          it 'should return generic msg on non boolean without name', ->
-            fn = Validate.typeError('', type_str)
-            expect( fn ).to.equal 'Type is not boolean'
 
 
       describe 'Defined', ->
@@ -106,6 +108,20 @@ describe 'Unit::Validate', ->
             expect( Validate.type(undefined, type_str, 'somevar') ).to.be.false
 
 
+        describe 'Message', ->
+
+          it 'should not return a message for a defined variable', ->
+            expect( Validate.typeMessage(5, type_str, 'somevar') ).to.be.undefined
+
+          it 'should return msg on undefined variable with name', ->
+            fn = Validate.typeMessage(undefined, type_str, 'somevar')
+            expect( fn ).to.equal 'somevar is undefined'
+
+          it 'should return generic msg on non string without name', ->
+            fn = Validate.typeMessage(undefined, type_str)
+            expect( fn ).to.equal 'Value is undefined'
+
+
         describe 'Throw', ->
 
           it 'should not throw on a defined variable', ->
@@ -119,19 +135,6 @@ describe 'Unit::Validate', ->
             fn = -> Validate.typeThrow(undefined, type_str)
             expect( fn ).to.throw ValidationError, 'Value is undefined'
 
-
-        describe 'Error', ->
-
-          it 'should not return a message for a defined variable', ->
-            expect( Validate.typeError(5, type_str, 'somevar') ).to.be.undefined
-
-          it 'should return msg on undefined variable with name', ->
-            fn = Validate.typeError(undefined, type_str, 'somevar')
-            expect( fn ).to.equal 'somevar is undefined'
-
-          it 'should return generic msg on non string without name', ->
-            fn = Validate.typeError(undefined, type_str)
-            expect( fn ).to.equal 'Value is undefined'
 
 
       describe 'Empty', ->
@@ -157,6 +160,20 @@ describe 'Unit::Validate', ->
             expect( Validate.type('a', type_str, name_str) ).to.be.false
 
 
+        describe 'Message', ->
+
+          it 'should validate empty', ->
+            expect( Validate.typeMessage([], type_str, name_str) ).to.be.undefined
+
+          it 'should return msg on non empty with name', ->
+            fn = Validate.typeMessage('test', type_str, name_str)
+            expect( fn ).to.equal 'label is not empty'
+
+          it 'should return generic msg on non empty without name', ->
+            fn = Validate.typeMessage('test', type_str)
+            expect( fn ).to.equal 'Value is not empty'
+
+
         describe 'Throw', ->
 
           it 'should validate empty', ->
@@ -170,19 +187,6 @@ describe 'Unit::Validate', ->
             fn = -> Validate.typeThrow('test', type_str)
             expect( fn ).to.throw ValidationError, 'Value is not empty'
 
-
-        describe 'Error', ->
-
-          it 'should validate empty', ->
-            expect( Validate.typeError([], type_str, name_str) ).to.be.undefined
-
-          it 'should return msg on non empty with name', ->
-            fn = Validate.typeError('test', type_str, name_str)
-            expect( fn ).to.equal 'label is not empty'
-
-          it 'should return generic msg on non empty without name', ->
-            fn = Validate.typeError('test', type_str)
-            expect( fn ).to.equal 'Value is not empty'
 
 
       describe 'Integer', ->
@@ -216,17 +220,17 @@ describe 'Unit::Validate', ->
             expect( fn ).to.throw ValidationError, 'Type is not integer'
 
 
-        describe 'Error', ->
+        describe 'Message', ->
 
           it 'should validate an integer', ->
-            expect( Validate.typeError(7, type_str, name_str) ).to.be.undefined
+            expect( Validate.typeMessage(7, type_str, name_str) ).to.be.undefined
 
           it 'should return msg on non integer with name', ->
-            fn = Validate.typeError('', type_str, name_str)
+            fn = Validate.typeMessage('', type_str, name_str)
             expect( fn ).to.equal 'the_int is not an integer'
 
           it 'should return generic msg on non integer without name', ->
-            fn = Validate.typeError('', type_str)
+            fn = Validate.typeMessage('', type_str)
             expect( fn ).to.equal 'Type is not integer'
 
 
@@ -258,17 +262,17 @@ describe 'Unit::Validate', ->
             expect( fn ).to.throw ValidationError, 'Type is not string'
 
 
-        describe 'Error', ->
+        describe 'Message', ->
 
           it 'should validate an string', ->
-            expect( Validate.typeError('test', type_str, name_str) ).to.be.undefined
+            expect( Validate.typeMessage('test', type_str, name_str) ).to.be.undefined
 
           it 'should return msg on non string with name', ->
-            fn = Validate.typeError([], type_str, name_str)
+            fn = Validate.typeMessage([], type_str, name_str)
             expect( fn ).to.equal 'description is not a string'
 
           it 'should return generic msg on non string without name', ->
-            fn = Validate.typeError(true, type_str)
+            fn = Validate.typeMessage(true, type_str)
             expect( fn ).to.equal 'Type is not string'
 
 
@@ -300,17 +304,17 @@ describe 'Unit::Validate', ->
             expect( fn ).to.throw ValidationError, 'Value is defined'
 
 
-        describe 'Error', ->
+        describe 'Message', ->
 
           it 'should validate an undefined variable', ->
-            expect( Validate.typeError(undefined, type_str, name_str) ).to.be.undefined
+            expect( Validate.typeMessage(undefined, type_str, name_str) ).to.be.undefined
 
           it 'should return msg on defined variable with name', ->
-            fn = Validate.typeError([], type_str, name_str)
+            fn = Validate.typeMessage([], type_str, name_str)
             expect( fn ).to.equal 'somevar is defined'
 
           it 'should return generic msg on non string without name', ->
-            fn = Validate.typeError(true, type_str)
+            fn = Validate.typeMessage(true, type_str)
             expect( fn ).to.equal 'Value is defined'
 
 
