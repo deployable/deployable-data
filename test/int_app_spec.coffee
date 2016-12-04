@@ -239,12 +239,12 @@ describe 'App Requests', ->
           .get "#{app_url_prefix}/store/a!b/entity/newentity"
           .then (result)->
             expect( result.res.text ).to.match /^\{/
-            expect( result.res.statusCode ).to.eql 400
             expect( result.res.body ).to.contain.key('error')
             err = result.res.body.error
-            expect( err ).to.have.property('message').and.match /Store name must be alpha numeric/
+            expect( err ).to.have.property('message').and.match /Validation of "store" url param failed. Value must only contain alphanumeric, dash and underscore/
             expect( err ).to.have.property('name').and.equal 'HttpError'
             expect( err ).to.have.property('status').and.equal 400
+            expect( result.res.statusCode ).to.eql 400
 
         it 'should error on bad entity', ()->
           request app
@@ -254,7 +254,7 @@ describe 'App Requests', ->
             expect( result.res.statusCode ).to.eql 400
             expect( result.res.body ).to.contain.key('error')
             err = result.res.body.error
-            expect( err ).to.have.property('message').and.match /Entity must be alpha numeric/
+            expect( err ).to.have.property('message').and.match /Validation of "entity" url param failed. Value must only contain alphanumeric, dash and underscore/
             expect( err ).to.have.property('name').and.equal('HttpError')
             expect( err ).to.have.property('status').and.equal(400)
 
@@ -277,7 +277,7 @@ describe 'App Requests', ->
           .then (result)->
             expect( result.res.body )
               .to.have.property 'error'
-              .and.to.have.all.keys 'message', 'name', 'status'
+              .and.to.have.all.keys 'message', 'name', 'status', 'err'
           p
 
 

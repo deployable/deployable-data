@@ -14,13 +14,14 @@ const dataApi = new DataAPI('memory')
 const handler = (object, promiseHandler, timeout) => {
   return function(req, res, next){
     debug('handler', req.url, process.env.NODE_ENV)
+    debug('req.params',req.params)
+    debug('req.params[0]',req.params[0])
     promiseHandler.call(object, req, res)
       .timeout(timeout)
       .then(data => res.json(data))
       .catch(next)
   }
 }
-
 
 const app_info = { 
   name: config.get('package.name'),
@@ -29,8 +30,10 @@ const app_info = {
 router.get('/', (req, res) => res.json({ app: app_info }) )
 
 router.use(bodyParser.json())
-router.param('store', DataAPI.storeParamCheck)
-router.param('entity', DataAPI.entityParamCheck)
+
+router.param( 'db', dataApi.dbParamCheck() )
+router.param( 'store', dataApi.storeParamCheck() )
+router.param( 'entity', dataApi.entityParamCheck() )
 
 // ### Schema
 
