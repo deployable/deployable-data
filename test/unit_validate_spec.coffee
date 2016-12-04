@@ -14,6 +14,11 @@ describe 'Unit::Validate', ->
           .to.be.an 'array'
           .and.to.have.length 26
 
+      it 'should fail to return a missing type', ->
+        fn = -> Validate.type(8, 'what')
+        expect( fn ).to.throw Error, /The type "what" is not able to be validated/
+
+
       describe 'Array', ->
 
         type_str = 'array'
@@ -393,7 +398,11 @@ describe 'Unit::Validate', ->
 
       it 'should return error message', ->
         msg = Validate.alphaMessage('a!b', 'thestring')
-        expect( msg ).to.be.equal "thestring is not alpha [ A-Z a-z ]"
+        expect( msg ).to.be.equal '"thestring" must only contain [ A-Z a-z ]'
+
+      it 'should return error message', ->
+        msg = Validate.alphaMessage('a!b')
+        expect( msg ).to.be.equal 'Value must only contain [ A-Z a-z ]'
 
       it 'should return error', ->
         res = Validate.alphaError('test', 'thestring')
@@ -402,83 +411,96 @@ describe 'Unit::Validate', ->
       it 'should return error', ->
         err = Validate.alphaError('test!', 'thestring')
         expect( err ).to.be.instanceOf(ValidationError)
-        expect( err.message ).to.equal "thestring is not alpha [ A-Z a-z ]"
+        expect( err.message ).to.equal '"thestring" must only contain [ A-Z a-z ]'
 
       it 'should not throw error', ->
-        fn = -> Validate.alphaThrow('test', 'thestring')
-        expect( fn ).to.not.throw
+        expect( Validate.alphaThrow('test', 'thestring') ).to.be.true
 
       it 'should throw error', ->
         fn = -> Validate.alphaThrow('test!', 'thestring')
-        expect( fn ).to.throw ValidationError, "thestring is not alpha [ A-Z a-z ]"
+        expect( fn ).to.throw ValidationError, '"thestring" must only contain [ A-Z a-z ]'
 
 
     describe 'Numeric', ->
 
-      it 'should return true numeric', ->
-        expect( Validate.numeric('0939393', 'thestring') ).to.be.true
+      name_str = "thestring"
+      name_str_msg = "\"#{name_str}\" "
+      error_msg = "must only contain [ 0-9 ]"
 
       it 'should return true numeric', ->
-        expect( Validate.numeric('59!#$%', 'thestring') ).to.be.false
+        expect( Validate.numeric('0939393', name_str) ).to.be.true
+
+      it 'should return true numeric', ->
+        expect( Validate.numeric('59!#$%', name_str) ).to.be.false
 
       it 'should return error message', ->
-        msg = Validate.numericMessage('2323', 'thestring')
+        msg = Validate.numericMessage('2323', name_str)
         expect( msg ).to.be.undefined
 
       it 'should return error message', ->
-        msg = Validate.numericMessage('a!b', 'thestring')
-        expect( msg ).to.be.equal "thestring is not numeric [ 0-9 ]"
+        msg = Validate.numericMessage('a!b', name_str)
+        expect( msg ).to.be.equal "#{name_str_msg}#{error_msg}"
+
+      it 'should return error message', ->
+        msg = Validate.numericMessage('a!b')
+        expect( msg ).to.be.equal "Value #{error_msg}"
 
       it 'should return error', ->
-        res = Validate.numericError('123453', 'thestring')
+        res = Validate.numericError('123453', name_str)
         expect( res ).to.be.undefined
 
       it 'should return error', ->
-        err = Validate.numericError('aaas', 'thestring')
+        err = Validate.numericError('aaas', name_str)
         expect( err ).to.be.instanceOf(ValidationError)
-        expect( err.message ).to.equal "thestring is not numeric [ 0-9 ]"
+        expect( err.message ).to.equal "#{name_str_msg}#{error_msg}"
 
       it 'should not throw error', ->
-        fn = -> Validate.numericThrow('2', 'thestring')
-        expect( fn ).to.not.throw
+        expect( Validate.numericThrow('2', name_str) ).to.be.true
 
       it 'should throw error', ->
-        fn = -> Validate.numericThrow('test!', 'thestring')
-        expect( fn ).to.throw ValidationError, "thestring is not numeric [ 0-9 ]"
+        fn = -> Validate.numericThrow('test!', name_str)
+        expect( fn ).to.throw ValidationError, "#{name_str_msg}#{error_msg}"
 
 
     describe 'Alpha Numeric', ->
 
-      it 'should return true alpha numeric', ->
-        expect( Validate.alphaNumeric('ab', 'thestring') ).to.be.true
+      name_str = "thestring"
+      name_str_msg = "\"#{name_str}\" "
+      error_msg = "must only contain [ A-Z a-z 0-9 ]"
 
       it 'should return true alpha numeric', ->
-        expect( Validate.alphaNumeric('59!#$%', 'thestring') ).to.be.false
+        expect( Validate.alphaNumeric('ab', name_str) ).to.be.true
+
+      it 'should return true alpha numeric', ->
+        expect( Validate.alphaNumeric('59!#$%', name_str) ).to.be.false
 
       it 'should return error message', ->
-        msg = Validate.alphaNumericMessage('ab', 'thestring')
+        msg = Validate.alphaNumericMessage('ab', name_str)
         expect( msg ).to.be.undefined
 
       it 'should return error message', ->
-        msg = Validate.alphaNumericMessage('a!b', 'thestring')
-        expect( msg ).to.be.equal "thestring is not alpha numeric [ A-Z a-z 0-9 ]"
+        msg = Validate.alphaNumericMessage('a!b', name_str)
+        expect( msg ).to.be.equal "#{name_str_msg}#{error_msg}"
+
+      it 'should return error message', ->
+        msg = Validate.alphaNumericMessage('a!b')
+        expect( msg ).to.be.equal "Value #{error_msg}"
 
       it 'should return error', ->
-        res = Validate.alphaNumericError('test', 'thestring')
+        res = Validate.alphaNumericError('test', name_str)
         expect( res ).to.be.undefined
 
       it 'should return error', ->
-        err = Validate.alphaNumericError('test!', 'thestring')
+        err = Validate.alphaNumericError('test!', name_str)
         expect( err ).to.be.instanceOf(ValidationError)
-        expect( err.message ).to.equal "thestring is not alpha numeric [ A-Z a-z 0-9 ]"
+        expect( err.message ).to.equal "#{name_str_msg}#{error_msg}"
+
+      it 'should not throw error', ->
+        expect( Validate.alphaNumericThrow('test', name_str) ).to.be.true
 
       it 'should throw error', ->
-        fn = -> Validate.alphaNumericThrow('test', 'thestring')
-        expect( fn ).to.not.throw
-
-      it 'should throw error', ->
-        fn = -> Validate.alphaNumericThrow('test!', 'thestring')
-        expect( fn ).to.throw ValidationError, "thestring is not alpha numeric [ A-Z a-z 0-9 ]"
+        fn = -> Validate.alphaNumericThrow('test!', name_str)
+        expect( fn ).to.throw ValidationError, "#{name_str_msg}#{error_msg}"
 
 
     describe 'Alpha Numeric Dash Underscore', ->
@@ -536,20 +558,29 @@ describe 'Unit::Validate', ->
       beforeEach ->
         validate = new Validate()
 
-      it 'should default to throw', ->
+      it 'should default throw to true', ->
         expect( validate.throw ).to.be.true
 
-      it 'should default to throw', ->
+      it 'should default error mode to false', ->
         expect( validate.error ).to.be.false
 
-      it 'should default to throw', ->
+      it 'should default message mode to false', ->
         expect( validate.message ).to.be.false
 
-      it 'should default to throw', ->
+      it 'should default results mode to false', ->
         expect( validate.result ).to.be.false
 
-      it 'should default to throw', ->
+      it 'should default `mode` to throw', ->
         expect( validate.mode ).to.equal 'throw'
+
+      it 'should get errors', ->
+        expect( validate.errors ).to.eql []
+
+      it 'should fail to set errors', ->
+        fn = -> validate.errors = ['test']
+        expect( fn ).to.throw Error, /errors should not be set/
+
+
 
 
     describe 'add', ->
@@ -559,10 +590,10 @@ describe 'Unit::Validate', ->
       before ->
         validate = new Validate()
 
-      it 'should add a test', ->
+      it 'should add a test to validate', ->
         expect( validate.add('type','value','string','wakka') ).to.be.ok
 
-      it 'should have a test', ->
+      it 'should have a test in the array', ->
         expect( validate._tests.length ).to.equal 1
 
 
@@ -578,10 +609,10 @@ describe 'Unit::Validate', ->
         expect( validate.run() ).to.be.ok
 
       it 'should run the errors', ->
-        expect( validate.errors() ).to.eql []
+        expect( validate.errors ).to.eql []
 
 
-    describe 'throw', ->
+    describe 'throw simples', ->
 
       validate = null
 
@@ -594,10 +625,10 @@ describe 'Unit::Validate', ->
         expect( fn ).to.throw ValidationError
 
       it 'should run the errors', ->
-        expect( validate.errors() ).to.eql []
+        expect( validate.errors ).to.eql []
 
 
-    describe 'throw', ->
+    describe 'throw extended', ->
 
       validate = null
       errors = null
@@ -611,17 +642,77 @@ describe 'Unit::Validate', ->
       it 'should run the tests', ->
         expect( validate.run() ).to.be.ok
 
-      it 'should run the errors', ->
-        errors = validate.errors()
+      it 'should contain errors after run', ->
+        errors = validate.errors
         expect( errors ).to.be.an 'array'
 
-      it 'has a validation error', ->
+      it 'should have a validation error for dtype', ->
         expect( errors[0] ).to.be.an.instanceOf ValidationError
         expect( errors[0].message ).to.equal 'dtype is not a string'
 
-      it 'has a validation error', ->
+      it 'should have a second validation error for dstr', ->
         expect( errors[1] ).to.be.an.instanceOf ValidationError
         expect( errors[1].message ).to.equal '"dstr" must only contain alphanumeric, dash and underscore [ A-Z a-z 0-9 _ - ]'
 
       it 'has the right number of errors', ->
         expect( errors.length ).to.eql 2
+
+
+    describe 'messages', ->
+
+      validate = null
+      errors = null
+
+      before ->
+        validate = new Validate({messages: true})
+          .add('length', 'sa', 1, 256, 'dlen')
+          .add('type', 5, 'string', 'dtype')
+          .add('alphaNumericDashUnderscore', 'a!b', 'dstr')
+
+      it 'should run the tests', ->
+        expect( validate.run() ).to.be.ok
+
+      it 'should run the errors', ->
+        errors = validate.errors
+        expect( errors ).to.be.an 'array'
+
+      it 'has a validation error', ->
+        expect( errors[0] ).to.equal 'dtype is not a string'
+
+      it 'has a validation error', ->
+        expect( errors[1] ).to.equal '"dstr" must only contain alphanumeric, dash and underscore [ A-Z a-z 0-9 _ - ]'
+
+      it 'has the right number of errors', ->
+        expect( errors.length ).to.eql 2
+
+
+
+    describe 'results', ->
+
+      validate = null
+      errors = null
+
+      before ->
+        validate = new Validate({results: true})
+          .add('length', 'sa', 1, 256, 'dlen')
+          .add('type', 5, 'string', 'dtype')
+          .add('alphaNumericDashUnderscore', 'a!b', 'dstr')
+
+      it 'should run the tests', ->
+        expect( validate.run() ).to.be.ok
+
+      it 'should run the errors', ->
+        errors = validate.errors
+        expect( errors ).to.be.an 'array'
+
+      it 'has a validation error', ->
+        expect( errors[0] ).to.be.an 'array'
+        .and.to.contain 'dtype'
+
+      it 'has a validation error', ->
+        expect( errors[1] ).to.be.an 'array'
+        .and.to.contain 'dstr'
+
+      it 'has the right number of errors', ->
+        expect( errors.length ).to.eql 2
+
