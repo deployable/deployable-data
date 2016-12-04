@@ -9,6 +9,11 @@ describe 'Unit::Validate', ->
 
     describe 'Types', ->
 
+      it 'should return the available types', ->
+        expect( Validate.types() )
+          .to.be.an 'array'
+          .and.to.have.length 26
+
       describe 'Array', ->
 
         type_str = 'array'
@@ -358,5 +363,104 @@ describe 'Unit::Validate', ->
         fn = -> Validate.lengthThrow('test',5,5,'thestring')
         expect( fn ).to.throw ValidationError, 'thestring has length 4. Must be 5'
 
+
+
   describe 'Instance', ->
 
+
+    describe 'creation', ->
+
+      it 'should create an instance', ->
+        expect( new Validate() ).to.be.an.instanceOf Validate
+
+
+    describe 'properties', ->
+
+      validate = null
+
+      beforeEach ->
+        validate = new Validate()
+
+      it 'should default to throw', ->
+        expect( validate.throw ).to.be.true
+
+      it 'should default to throw', ->
+        expect( validate.error ).to.be.false
+
+      it 'should default to throw', ->
+        expect( validate.message ).to.be.false
+
+      it 'should default to throw', ->
+        expect( validate.result ).to.be.false
+
+      it 'should default to throw', ->
+        expect( validate.mode ).to.equal 'throw'
+
+
+    describe 'add', ->
+
+      validate = null
+
+      before ->
+        validate = new Validate()
+
+      it 'should add a test', ->
+        expect( validate.add('type','value','string','wakka') ).to.be.ok
+
+      it 'should have a test', ->
+        expect( validate._tests.length ).to.equal 1
+
+
+    describe 'run', ->
+
+      validate = null
+
+      before ->
+        validate = new Validate()
+        validate.add('type','value','string','wakka')
+
+      it 'should run the tests', ->
+        expect( validate.run() ).to.eql true
+
+      it 'should run the errors', ->
+        expect( validate.errors() ).to.eql []
+
+
+    describe 'throw', ->
+
+      validate = null
+
+      before ->
+        validate = new Validate()
+        validate.add('type', 5, 'string', 'wakka')
+
+      it 'should run the tests', ->
+        fn = -> validate.run()
+        expect( fn ).to.throw ValidationError
+
+      it 'should run the errors', ->
+        expect( validate.errors() ).to.eql []
+
+
+    describe 'throw', ->
+
+      validate = null
+      errors = null
+
+      before ->
+        validate = new Validate({errors: true})
+        validate.add('type', 5, 'string', 'wakka')
+
+      it 'should run the tests', ->
+        expect( validate.run() ).to.be.false
+
+      it 'should run the errors', ->
+        errors = validate.errors()
+        expect( errors ).to.be.an 'array'
+
+      it 'has the right number of errors', ->
+        expect( errors.length ).to.eql 1
+
+      it 'has a validation error', ->
+        expect( errors[0] ).to.be.an.instanceOf ValidationError
+        expect( errors[0].message ).to.equal 'wakka is not a string'
