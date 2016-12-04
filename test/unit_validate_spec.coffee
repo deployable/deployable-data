@@ -483,14 +483,14 @@ describe 'Unit::Validate', ->
 
     describe 'Alpha Numeric Dash Underscore', ->
 
-      err_suffix = "is not alpha numeric dash underscore [ A-Z a-z 0-9 _ - ]"
+      err_suffix = "must only contain alphanumeric, dash and underscore [ A-Z a-z 0-9 _ - ]"
       name_str = 'thestring'
 
       it 'should return true alpha numeric', ->
         expect( Validate.alphaNumericDashUnderscore('ab', name_str) ).to.be.true
 
       it 'should return true alpha numeric', ->
-        expect( Validate.alphaNumericDashUnderscore('59!#$%', name_str) ).to.be.false
+        expect( Validate.alphaNumericDashUnderscore('a!b', name_str) ).to.be.false
 
       it 'should return error message', ->
         msg = Validate.alphaNumericDashUnderscoreMessage('ab', name_str)
@@ -498,7 +498,7 @@ describe 'Unit::Validate', ->
 
       it 'should return error message', ->
         msg = Validate.alphaNumericDashUnderscoreMessage('a!b', name_str)
-        expect( msg ).to.be.equal "#{name_str} #{err_suffix}"
+        expect( msg ).to.be.equal "\"#{name_str}\" #{err_suffix}"
 
       it 'should return error', ->
         res = Validate.alphaNumericDashUnderscoreError('test', name_str)
@@ -507,7 +507,7 @@ describe 'Unit::Validate', ->
       it 'should return error', ->
         err = Validate.alphaNumericDashUnderscoreError('test!', name_str)
         expect( err ).to.be.instanceOf(ValidationError)
-        expect( err.message ).to.equal "#{name_str} #{err_suffix}"
+        expect( err.message ).to.equal "\"#{name_str}\" #{err_suffix}"
 
       it 'should throw error', ->
         fn = -> Validate.alphaNumericDashUnderscoreThrow('test', name_str)
@@ -515,7 +515,7 @@ describe 'Unit::Validate', ->
 
       it 'should throw error', ->
         fn = -> Validate.alphaNumericDashUnderscoreThrow('test!', name_str)
-        expect( fn ).to.throw ValidationError, "#{name_str} #{err_suffix}"
+        expect( fn ).to.throw ValidationError, "\"#{name_str}\" #{err_suffix}"
 
 
 
@@ -604,8 +604,9 @@ describe 'Unit::Validate', ->
 
       before ->
         validate = new Validate({errors: true})
-        validate.add('length', 'sa', 1, 256, 'dlen')
-        validate.add('type', 5, 'string', 'dtype')
+          .add('length', 'sa', 1, 256, 'dlen')
+          .add('type', 5, 'string', 'dtype')
+          .add('alphaNumericDashUnderscore', 'a!b', 'dstr')
 
       it 'should run the tests', ->
         expect( validate.run() ).to.be.ok
@@ -618,5 +619,9 @@ describe 'Unit::Validate', ->
         expect( errors[0] ).to.be.an.instanceOf ValidationError
         expect( errors[0].message ).to.equal 'dtype is not a string'
 
+      it 'has a validation error', ->
+        expect( errors[1] ).to.be.an.instanceOf ValidationError
+        expect( errors[1].message ).to.equal '"dstr" must only contain alphanumeric, dash and underscore [ A-Z a-z 0-9 _ - ]'
+
       it 'has the right number of errors', ->
-        expect( errors.length ).to.eql 1
+        expect( errors.length ).to.eql 2
