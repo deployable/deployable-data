@@ -379,6 +379,146 @@ describe 'Unit::Validate', ->
         expect( fn ).to.throw ValidationError, 'thestring has length 4. Must be 5'
 
 
+    describe 'Alpha', ->
+
+      it 'should return true alpha', ->
+        expect( Validate.alpha('ab', 'thestring') ).to.be.true
+
+      it 'should return true alpha', ->
+        expect( Validate.alpha('59!#$%', 'thestring') ).to.be.false
+
+      it 'should return error message', ->
+        msg = Validate.alphaMessage('ab', 'thestring')
+        expect( msg ).to.be.undefined
+
+      it 'should return error message', ->
+        msg = Validate.alphaMessage('a!b', 'thestring')
+        expect( msg ).to.be.equal "thestring is not alpha [ A-Z a-z ]"
+
+      it 'should return error', ->
+        res = Validate.alphaError('test', 'thestring')
+        expect( res ).to.be.undefined
+
+      it 'should return error', ->
+        err = Validate.alphaError('test!', 'thestring')
+        expect( err ).to.be.instanceOf(ValidationError)
+        expect( err.message ).to.equal "thestring is not alpha [ A-Z a-z ]"
+
+      it 'should not throw error', ->
+        fn = -> Validate.alphaThrow('test', 'thestring')
+        expect( fn ).to.not.throw
+
+      it 'should throw error', ->
+        fn = -> Validate.alphaThrow('test!', 'thestring')
+        expect( fn ).to.throw ValidationError, "thestring is not alpha [ A-Z a-z ]"
+
+
+    describe 'Numeric', ->
+
+      it 'should return true numeric', ->
+        expect( Validate.numeric('0939393', 'thestring') ).to.be.true
+
+      it 'should return true numeric', ->
+        expect( Validate.numeric('59!#$%', 'thestring') ).to.be.false
+
+      it 'should return error message', ->
+        msg = Validate.numericMessage('2323', 'thestring')
+        expect( msg ).to.be.undefined
+
+      it 'should return error message', ->
+        msg = Validate.numericMessage('a!b', 'thestring')
+        expect( msg ).to.be.equal "thestring is not numeric [ 0-9 ]"
+
+      it 'should return error', ->
+        res = Validate.numericError('123453', 'thestring')
+        expect( res ).to.be.undefined
+
+      it 'should return error', ->
+        err = Validate.numericError('aaas', 'thestring')
+        expect( err ).to.be.instanceOf(ValidationError)
+        expect( err.message ).to.equal "thestring is not numeric [ 0-9 ]"
+
+      it 'should not throw error', ->
+        fn = -> Validate.numericThrow('2', 'thestring')
+        expect( fn ).to.not.throw
+
+      it 'should throw error', ->
+        fn = -> Validate.numericThrow('test!', 'thestring')
+        expect( fn ).to.throw ValidationError, "thestring is not numeric [ 0-9 ]"
+
+
+    describe 'Alpha Numeric', ->
+
+      it 'should return true alpha numeric', ->
+        expect( Validate.alphaNumeric('ab', 'thestring') ).to.be.true
+
+      it 'should return true alpha numeric', ->
+        expect( Validate.alphaNumeric('59!#$%', 'thestring') ).to.be.false
+
+      it 'should return error message', ->
+        msg = Validate.alphaNumericMessage('ab', 'thestring')
+        expect( msg ).to.be.undefined
+
+      it 'should return error message', ->
+        msg = Validate.alphaNumericMessage('a!b', 'thestring')
+        expect( msg ).to.be.equal "thestring is not alpha numeric [ A-Z a-z 0-9 ]"
+
+      it 'should return error', ->
+        res = Validate.alphaNumericError('test', 'thestring')
+        expect( res ).to.be.undefined
+
+      it 'should return error', ->
+        err = Validate.alphaNumericError('test!', 'thestring')
+        expect( err ).to.be.instanceOf(ValidationError)
+        expect( err.message ).to.equal "thestring is not alpha numeric [ A-Z a-z 0-9 ]"
+
+      it 'should throw error', ->
+        fn = -> Validate.alphaNumericThrow('test', 'thestring')
+        expect( fn ).to.not.throw
+
+      it 'should throw error', ->
+        fn = -> Validate.alphaNumericThrow('test!', 'thestring')
+        expect( fn ).to.throw ValidationError, "thestring is not alpha numeric [ A-Z a-z 0-9 ]"
+
+
+    describe 'Alpha Numeric Dash Underscore', ->
+
+      err_suffix = "is not alpha numeric dash underscore [ A-Z a-z 0-9 _ - ]"
+      name_str = 'thestring'
+
+      it 'should return true alpha numeric', ->
+        expect( Validate.alphaNumericDashUnderscore('ab', name_str) ).to.be.true
+
+      it 'should return true alpha numeric', ->
+        expect( Validate.alphaNumericDashUnderscore('59!#$%', name_str) ).to.be.false
+
+      it 'should return error message', ->
+        msg = Validate.alphaNumericDashUnderscoreMessage('ab', name_str)
+        expect( msg ).to.be.undefined
+
+      it 'should return error message', ->
+        msg = Validate.alphaNumericDashUnderscoreMessage('a!b', name_str)
+        expect( msg ).to.be.equal "#{name_str} #{err_suffix}"
+
+      it 'should return error', ->
+        res = Validate.alphaNumericDashUnderscoreError('test', name_str)
+        expect( res ).to.be.undefined
+
+      it 'should return error', ->
+        err = Validate.alphaNumericDashUnderscoreError('test!', name_str)
+        expect( err ).to.be.instanceOf(ValidationError)
+        expect( err.message ).to.equal "#{name_str} #{err_suffix}"
+
+      it 'should throw error', ->
+        fn = -> Validate.alphaNumericDashUnderscoreThrow('test', name_str)
+        expect( fn ).to.not.throw
+
+      it 'should throw error', ->
+        fn = -> Validate.alphaNumericDashUnderscoreThrow('test!', name_str)
+        expect( fn ).to.throw ValidationError, "#{name_str} #{err_suffix}"
+
+
+
 
   describe 'Instance', ->
 
