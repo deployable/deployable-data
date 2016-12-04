@@ -326,6 +326,9 @@ describe 'Unit::Validate', ->
     describe 'Length', ->
 
       it 'should return true for the length of string', ->
+        expect( Validate.length('a', 1, 256, 'thestring') ).to.be.true
+
+      it 'should return true for the length of string', ->
         expect( Validate.length('test',4,4,'thestring') ).to.be.true
 
       it 'should return true for above the length of string', ->
@@ -347,20 +350,32 @@ describe 'Unit::Validate', ->
         expect( Validate.length('test',3) ).to.be.false
 
       it 'should return error message', ->
-        msg = Validate.lengthMessage('test',5,5,'thestring')
-        expect( msg ).to.be.equal "thestring has length 4. Must be 5"
+        msg = Validate.lengthMessage('test',1,5,'thestring')
+        expect( msg ).to.be.undefined
 
       it 'should return error message', ->
         msg = Validate.lengthMessage('test',5,5,'thestring')
         expect( msg ).to.be.equal "thestring has length 4. Must be 5"
 
+      it 'should return error message', ->
+        msg = Validate.lengthMessage('tes', 4, 5, 'thestring')
+        expect( msg ).to.be.equal "thestring has length 3. Must be between 4 and 5"
+
       it 'should return error', ->
-        err = Validate.lengthError('test',5,5,'thestring')
+        res = Validate.lengthError('test', 1, 5,'thestring')
+        expect( res ).to.be.undefined
+
+      it 'should return error', ->
+        err = Validate.lengthError('test', 5, 5,'thestring')
         expect( err ).to.be.instanceOf(ValidationError)
         expect( err.message ).to.equal 'thestring has length 4. Must be 5'
 
       it 'should throw error', ->
-        fn = -> Validate.lengthThrow('test',5,5,'thestring')
+        fn = -> Validate.lengthThrow('test', 1, 5,'thestring')
+        expect( fn ).to.not.throw
+
+      it 'should throw error', ->
+        fn = -> Validate.lengthThrow('test', 5, 5,'thestring')
         expect( fn ).to.throw ValidationError, 'thestring has length 4. Must be 5'
 
 
@@ -420,7 +435,7 @@ describe 'Unit::Validate', ->
         validate.add('type','value','string','wakka')
 
       it 'should run the tests', ->
-        expect( validate.run() ).to.eql true
+        expect( validate.run() ).to.be.ok
 
       it 'should run the errors', ->
         expect( validate.errors() ).to.eql []
@@ -449,18 +464,19 @@ describe 'Unit::Validate', ->
 
       before ->
         validate = new Validate({errors: true})
-        validate.add('type', 5, 'string', 'wakka')
+        validate.add('length', 'sa', 1, 256, 'dlen')
+        validate.add('type', 5, 'string', 'dtype')
 
       it 'should run the tests', ->
-        expect( validate.run() ).to.be.false
+        expect( validate.run() ).to.be.ok
 
       it 'should run the errors', ->
         errors = validate.errors()
         expect( errors ).to.be.an 'array'
 
-      it 'has the right number of errors', ->
-        expect( errors.length ).to.eql 1
-
       it 'has a validation error', ->
         expect( errors[0] ).to.be.an.instanceOf ValidationError
-        expect( errors[0].message ).to.equal 'wakka is not a string'
+        expect( errors[0].message ).to.equal 'dtype is not a string'
+
+      it 'has the right number of errors', ->
+        expect( errors.length ).to.eql 1
