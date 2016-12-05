@@ -1,4 +1,4 @@
-# data
+# deployabe-data
 
 Store data via an API in a generic backend
 
