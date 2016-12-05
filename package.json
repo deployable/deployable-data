@@ -20,6 +20,8 @@
     "bluebird": "3.4.6",
     "body-parser": "1.15.2",
     "debug": "^2.0",
+    "deployable-errors": "^0.5.0",
+    "deployable-validate": "^0.1.4",
     "express": "~4.14.0",
     "express-winston": "^2.1.0",
     "lodash": "~4.17.2",
