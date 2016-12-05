@@ -8,7 +8,7 @@ describe 'Unit::ValidateTest', ->
   describe 'Class', ->
 
     it 'should create an instance', ->
-      test = new ValidateTest('unit', { test: () => true } )
+      test = new ValidateTest('unit', { test: () -> true } )
       expect( test).to.be.an.instanceOf ValidateTest
 
     it 'should export ValidationError', ->
@@ -17,12 +17,12 @@ describe 'Unit::ValidateTest', ->
 
   describe 'Instance', ->
 
-    describe 'properties',
+    describe 'properties', ->
 
       test = null
 
       beforeEach ->
-        test = new ValidateTest('unit', { test: () => true } )
+        test = new ValidateTest('unit', { test: () -> true } )
 
       it 'should have a label', ->
         expect( test.label ).to.equal 'unit'
@@ -44,7 +44,12 @@ describe 'Unit::ValidateTest', ->
         expect( test.default_value_name ).to.be.equal 'Value'
 
     
-    describe 'messages', ->
+    describe '.messages', ->
+
+      test = null
+
+      beforeEach ->
+        test = new ValidateTest('unit', { test: () -> true } )
 
       it 'should build a message from the default', ->
         expect( test.buildMessage({name:'blah'}) ).to.equal '"blah" failed validation'
@@ -67,7 +72,7 @@ describe 'Unit::ValidateTest', ->
 
       it 'shouldnt accept a template directly', ->
         fn = -> test.template = ''
-        expect( fn ).to.throw Error, /The test template can not be set directly/
+        expect( fn ).to.throw Error, /The tests template can not be set directly/
 
       it 'should build a message from args', ->
         test.arg_names = ['value','arg']
@@ -84,8 +89,19 @@ describe 'Unit::ValidateTest', ->
         fn = -> test.message = undefined
         expect( fn ).to.throw Error, /property must be a string or function/
 
+      it 'should error on a bad _message', ->
+        test._message = undefined
+        fn = -> 
+          test.buildMessage({name: 'something'})
+        expect( fn ).to.throw Error, /property is the wrong type/
 
-    describe 'tests', ->
+
+    describe '.test', ->
+
+      test = null
+
+      beforeEach ->
+        test = new ValidateTest('unit', { test: () -> true } )
 
       it 'should accept a new test', ->
         expect( test.test = -> false ).to.be.ok
@@ -99,7 +115,12 @@ describe 'Unit::ValidateTest', ->
         expect( fn ).to.throw Error, /The "test" property must be a function, not a string/
 
 
-    describe 'group', ->
+    describe '.group', ->
+
+      test = null
+
+      beforeEach ->
+        test = new ValidateTest('unit', { test: () -> true } )
 
       it 'should accept a new group', ->
         expect(test.group = 'yep').to.be.ok
@@ -109,7 +130,12 @@ describe 'Unit::ValidateTest', ->
         expect( test.group ).to.equal 'yep'
 
 
-    describe 'arg_names', ->
+    describe '.arg_names', ->
+
+      test = null
+
+      beforeEach ->
+        test = new ValidateTest('unit', { test: () -> true } )
 
       it 'should accept a arg_names', ->
         expect(test.arg_names = []).to.be.ok
@@ -120,6 +146,58 @@ describe 'Unit::ValidateTest', ->
 
       it 'should fail to set bad arg_names', ->
         fn = -> test.arg_names = 'test'
-        expect( fn ).to.throw Error, /The test "arg_names" must be an array/
+        expect( fn ).to.throw Error, /"arg_names" must be an array/
 
 
+
+    describe '.label', ->
+
+      test = null
+
+      beforeEach ->
+        test = new ValidateTest('unit_label', { test: () -> true } )
+
+      it 'should accept a arg_names', ->
+        expect(test.label = 'other label').to.be.ok
+
+      it 'should fail to set bad arg_names', ->
+        fn = -> test.label = []
+        expect( fn ).to.throw Error, /label must be a string. Got object/
+
+
+
+    describe 'Test Runners', ->
+
+      test = null
+
+      beforeEach ->
+        conf = {
+          args: ['first', 'second'],
+          test: (first, second) ->
+            Boolean(first) && Boolean(second)
+          ,
+          message: '{{name}} testing ({{first}} && {{second}}) :D',
+          group: 'testing'
+        }
+        test = new ValidateTest('testing', conf)
+
+      it 'should return message on runMessage', ->
+        expect( test.runMessage( false, false, 'b') )
+          .to.equal '"b" testing (false && false) :D'
+
+      it 'should return undefined on ok runMessage', ->
+        expect( test.runMessage( true, true, 'b') ).to.be.undefined
+
+      it 'should return error on runError', ->
+        expect( test.runError( false, false, 'b') )
+          .to.be.an.instanceOf ValidationError, /"b" testing \(false && false\) :D/
+
+      it 'should return undefined on ok runMessage', ->
+        expect( test.runError( true, true, 'b') ).to.be.undefined
+
+      it 'should throw on runThrow', ->
+        fn = -> test.runThrow( false, false, 'b')
+        expect( fn ).to.throw Error, /"b" testing \(false && false\) :D/
+
+      it 'should return true on ok runThrow', ->
+        expect( test.runThrow( true, true, 'b') ).to.be.true

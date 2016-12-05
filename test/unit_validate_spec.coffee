@@ -7,14 +7,26 @@ describe 'Unit::Validate', ->
 
   describe 'Class', ->
 
-    # describe 'Builder', ->
+    describe 'Manage Tests', ->
 
-    #   it 'should have a testing function', ->
-    #     Validate.buildMethods()
-    #     Validate.testing('string')
-    #     Validate.testingMessage('string')
-    #     Validate.testingError('string')
-    #     Validate.testingThrow('string')
+      it 'should get a test', ->
+        expect( Validate.getTest('testing') ).to.be.ok
+
+      it 'should throw on a missing test', ->
+        fn = -> Validate.getTest('testingno')
+        expect( fn ).to.throw Error, /No test named "testingno" available/
+
+      it 'should add a new test', ->
+        expect( Validate.addTest('testingtwo', { test: (val)=> val }) ).to.be.ok
+
+      it 'should run the new test', ->
+        expect( Validate.a('testingtwo', true) ).to.be.true
+        expect( Validate.a('testingtwo', false) ).to.be.false
+
+      it 'should fail to add the same test', ->
+        fn = -> Validate.addTest('testingtwo', { test: (val)=> val })
+        expect( fn ).to.be.throw Error, /Test label "testingtwo" already exists/
+
 
     describe 'Dynamic Tests', ->
 
@@ -32,12 +44,16 @@ describe 'Unit::Validate', ->
       
       it 'a number 1 range 3,5 false', ->
         expect( Validate.number('range', 1, 3,5) ).to.be.false
+
       it 'number 1 range 3,5 false', ->
         expect( Validate.a('range', 1, 3,5) ).to.be.false
+
       it 'number 1 between 3,5 false', ->
         expect( Validate.number('between', 1, 3,5) ).to.be.false
+
       it 'number 1 between 1,5 false', ->
         expect( Validate.a('between', 1, 1,5) ).to.be.false
+
       it 'number 2 between 1,5  true', ->
         expect( Validate.number('between', 2, 1,5) ).to.be.true
 
@@ -52,6 +68,9 @@ describe 'Unit::Validate', ->
         fn = -> Validate.andThrow('between', 1, 2, 5)
         expect( fn ).to.throw ValidationError, /Value must be between 2 and 5/
       
+      it 'test types buffer via language', ->
+        expect( Validate.language('buffer', new Buffer('')) ).to.be.true
+
       it 'test types buffer', ->
         expect( Validate.a('buffer', new Buffer('')) ).to.be.true
       
@@ -838,6 +857,7 @@ describe 'Unit::Validate', ->
         validate = new Validate({messages: true})
           .add('length', 'sa', 1, 256, 'dlen')
           .add('string', 5, 'dtype')
+          .add('testing', true, true, 'andtest')
           .add('alphaNumericDashUnderscore', 'a!b', 'dstr')
 
       it 'should run the tests', ->
