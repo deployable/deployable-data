@@ -285,60 +285,60 @@ describe 'Unit::Validate', ->
 
 
 
-    xdescribe 'Length', ->
+    describe 'Length', ->
 
       it 'should return true for the length of string', ->
-        expect( Validate.length('a', 1, 256, 'thestring') ).to.be.true
+        expect( Validate.a('length', 'a', 1, 256, 'thestring') ).to.be.true
 
       it 'should return true for the length of string', ->
-        expect( Validate.length('test',4,4,'thestring') ).to.be.true
+        expect( Validate.a('length', 'test', 4, 4, 'thestring') ).to.be.true
 
       it 'should return true for above the length of string', ->
-        expect( Validate.length('test',3,5,'thestring') ).to.be.true
+        expect( Validate.a('length', 'test', 3, 5, 'thestring') ).to.be.true
 
       it 'should return false for below the length of string', ->
-        expect( Validate.length('test',3,3,'thestring') ).to.be.false
+        expect( Validate.a('length', 'test', 3, 3, 'thestring') ).to.be.false
 
       it 'should return false for above the length of string', ->
-        expect( Validate.length('test',5,5,'thestring') ).to.be.false
+        expect( Validate.a('length', 'test', 5, 5, 'thestring') ).to.be.false
 
       it 'should return true for only a min', ->
-        expect( Validate.length('test',4) ).to.be.true
+        expect( Validate.a('length', 'test',4) ).to.be.true
 
       it 'should return false for only a min above', ->
-        expect( Validate.length('test',5) ).to.be.false
+        expect( Validate.a('length', 'test',5) ).to.be.false
 
       it 'should return false for only a min below', ->
-        expect( Validate.length('test',3) ).to.be.false
+        expect( Validate.a('length', 'test',3) ).to.be.false
 
       it 'should return error message', ->
-        msg = Validate.lengthMessage('test',1,5,'thestring')
+        msg = Validate.toMessage('length', 'test', 1, 5,'thestring')
         expect( msg ).to.be.undefined
 
       it 'should return error message', ->
-        msg = Validate.lengthMessage('test',5,5,'thestring')
-        expect( msg ).to.be.equal "thestring has length 4. Must be 5"
+        msg = Validate.toMessage('length', 'test', 5, 5,'thestring')
+        expect( msg ).to.be.equal '"thestring" has length 4. Must be 5'
 
       it 'should return error message', ->
-        msg = Validate.lengthMessage('tes', 4, 5, 'thestring')
-        expect( msg ).to.be.equal "thestring has length 3. Must be between 4 and 5"
+        msg = Validate.toMessage('length', 'tes', 4, 5, 'thestring')
+        expect( msg ).to.be.equal '"thestring" has length 3. Must be 4 to 5'
 
       it 'should return error', ->
-        res = Validate.lengthError('test', 1, 5,'thestring')
+        res = Validate.toError('length', 'test', 1, 5,'thestring')
         expect( res ).to.be.undefined
 
       it 'should return error', ->
-        err = Validate.lengthError('test', 5, 5,'thestring')
+        err = Validate.toError('length', 'test', 5, 5,'thestring')
         expect( err ).to.be.instanceOf(ValidationError)
-        expect( err.message ).to.equal 'thestring has length 4. Must be 5'
+        expect( err.message ).to.equal '"thestring" has length 4. Must be 5'
 
       it 'should throw error', ->
-        fn = -> Validate.lengthThrow('test', 1, 5,'thestring')
+        fn = -> Validate.andThrow('length', 'test', 1, 5,'thestring')
         expect( fn ).to.not.throw
 
       it 'should throw error', ->
-        fn = -> Validate.lengthThrow('test', 5, 5,'thestring')
-        expect( fn ).to.throw ValidationError, 'thestring has length 4. Must be 5'
+        fn = -> Validate.andThrow('length', '3es', 4, 5,'thestring')
+        expect( fn ).to.throw ValidationError, '"thestring" has length 3. Must be 4 to 5'
 
 
     describe 'Alpha', ->
