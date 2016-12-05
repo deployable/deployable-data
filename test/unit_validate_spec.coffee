@@ -41,7 +41,6 @@ describe 'Unit::Validate', ->
         expect( Validate.number('between', 1, 2, 5) ).to.be.false
 
       it 'throws number 1 between 2,5  true', ->
-        #Validate.andThrow('between', 1, 2, 5)
         fn = -> Validate.andThrow('between', 1, 2, 5)
         expect( fn ).to.throw ValidationError, /Value must be between 2 and 5/
 

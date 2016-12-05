@@ -17,29 +17,31 @@ describe 'Unit::ValidateTest', ->
 
   describe 'Instance', ->
 
-    test = null
+    describe 'properties',
 
-    beforeEach ->
-      test = new ValidateTest('unit', { test: () => true } )
+      test = null
 
-    it 'should have a label', ->
-      expect( test.label ).to.equal 'unit'
+      beforeEach ->
+        test = new ValidateTest('unit', { test: () => true } )
 
-    it 'should have a default string message', ->
-      expect( test.message ).to.be.a 'string'
+      it 'should have a label', ->
+        expect( test.label ).to.equal 'unit'
 
-    it 'should have a default message', ->
-      expect( test.message ).to.be.equal '{{name}} failed validation'
+      it 'should have a default string message', ->
+        expect( test.message ).to.be.a 'string'
 
-    it 'should have a template set', ->
-      expect( test.template ).to.be.ok
-      expect( test.template ).to.be.an.instanceOf(Function)
+      it 'should have a default message', ->
+        expect( test.message ).to.be.equal '{{name}} failed validation'
 
-    it 'should have default arg of "value"', ->
-      expect( test.arg_names ).to.be.eql ['value']
+      it 'should have a template set', ->
+        expect( test.template ).to.be.ok
+        expect( test.template ).to.be.an.instanceOf(Function)
 
-    it 'should have a default_value_name of Value', ->
-      expect( test.default_value_name ).to.be.equal 'Value'
+      it 'should have default arg of "value"', ->
+        expect( test.arg_names ).to.be.eql ['value']
+
+      it 'should have a default_value_name of Value', ->
+        expect( test.default_value_name ).to.be.equal 'Value'
 
     
     describe 'messages', ->
