@@ -20,12 +20,16 @@ describe 'Unit::Validate', ->
 
       it 'a string "test" alpha true', ->
         expect( Validate.string('alpha', 'test') ).to.be.true
+      
       it 'string "test" alpha true', ->
         expect( Validate.string('alpha', 'test') ).to.be.true
+      
       it 'string "test9" alpha true', ->
         expect( Validate.string('alpha', 'test9c') ).to.be.false
+
       it 'a number 3 range 1,5 true', ->
         expect( Validate.number('range', 3, 1,5) ).to.be.true
+      
       it 'a number 1 range 3,5 false', ->
         expect( Validate.number('range', 1, 3,5) ).to.be.false
       it 'number 1 range 3,5 false', ->
@@ -39,6 +43,10 @@ describe 'Unit::Validate', ->
 
       it 'number 1 between 2,5  true', ->
         expect( Validate.number('between', 1, 2, 5) ).to.be.false
+
+      it 'number group throws on missing', ->
+        fn = -> Validate.number('match', 1, 2, 5)
+        expect( fn ).to.throw Error
 
       it 'throws number 1 between 2,5  true', ->
         fn = -> Validate.andThrow('between', 1, 2, 5)
@@ -352,6 +360,10 @@ describe 'Unit::Validate', ->
 
       it 'should return true alpha', ->
         expect( Validate.string('alpha', '59!#$%', 'thestring') ).to.be.false
+
+      it 'should return true alpha', ->
+        fn = -> Validate.string('integer', '59!#$%', 'thestring')
+        expect( fn ).to.throw Error
 
       it 'should return error message', ->
         msg = Validate.toMessage('alpha', 'ab', 'thestring')
@@ -674,8 +686,29 @@ describe 'Unit::Validate', ->
           expect( fn ).to.throw ValidationError, 'Value must be undefined'
 
 
+    describe 'between', ->
+
+      it 'should between', ->
+        expect( Validate.a('between',3,4,5) ).to.be.false
+        expect( Validate.a('between',4,4,5) ).to.be.false
+        expect( Validate.a('between',5,4,5) ).to.be.false
+        expect( Validate.a('between',5,4,6) ).to.be.true
 
 
+    describe 'range', ->
+
+      it 'should range', ->
+        expect( Validate.a('range',3,4,5) ).to.be.false
+        expect( Validate.a('range',4,4,5) ).to.be.true
+        expect( Validate.a('range',5,4,5) ).to.be.true
+        expect( Validate.a('range',5,4,6) ).to.be.true
+
+
+    describe 'match', ->
+
+      it 'should match', ->
+        expect( Validate.a('match','string',/string/) ).to.be.true
+        expect( Validate.a('match','5',/5/) ).to.be.true
 
 
   # ## Instance
