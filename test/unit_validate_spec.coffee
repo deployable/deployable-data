@@ -7,17 +7,47 @@ describe 'Unit::Validate', ->
 
   describe 'Class', ->
 
-    describe 'Types', ->
+    # describe 'Builder', ->
 
-      it 'should return the available types', ->
-        expect( Validate.types() )
-          .to.be.an 'array'
-          .and.to.have.length 26
+    #   it 'should have a testing function', ->
+    #     Validate.buildMethods()
+    #     Validate.testing('string')
+    #     Validate.testingMessage('string')
+    #     Validate.testingError('string')
+    #     Validate.testingThrow('string')
 
-      it 'should fail to return a missing type', ->
-        fn = -> Validate.type(8, 'what')
-        expect( fn ).to.throw Error, /The type "what" is not able to be validated/
+    describe 'Dynamic Tests', ->
 
+      it 'a string "test" alpha true', ->
+        expect( Validate.string('alpha', 'test') ).to.be.true
+      it 'string "test" alpha true', ->
+        expect( Validate.string('alpha', 'test') ).to.be.true
+      it 'string "test9" alpha true', ->
+        expect( Validate.string('alpha', 'test9c') ).to.be.false
+      it 'a number 3 range 1,5 true', ->
+        expect( Validate.number('range', 3, 1,5) ).to.be.true
+      it 'a number 1 range 3,5 false', ->
+        expect( Validate.number('range', 1, 3,5) ).to.be.false
+      it 'number 1 range 3,5 false', ->
+        expect( Validate.a('range', 1, 3,5) ).to.be.false
+      it 'number 1 between 3,5 false', ->
+        expect( Validate.number('between', 1, 3,5) ).to.be.false
+      it 'number 1 between 1,5 false', ->
+        expect( Validate.a('between', 1, 1,5) ).to.be.false
+      it 'number 2 between 1,5  true', ->
+        expect( Validate.number('between', 2, 1,5) ).to.be.true
+
+      it 'number 1 between 2,5  true', ->
+        expect( Validate.number('between', 1, 2, 5) ).to.be.false
+
+      it 'throws number 1 between 2,5  true', ->
+        #Validate.andThrow('between', 1, 2, 5)
+        fn = -> Validate.andThrow('between', 1, 2, 5)
+        expect( fn ).to.throw ValidationError, /Value must be between 2 and 5/
+
+
+    # Types moved into new test world
+    describe 'Type Tests', ->
 
       describe 'Array', ->
 
@@ -27,38 +57,38 @@ describe 'Unit::Validate', ->
         describe 'Boolean', ->
 
           it 'should validate an array', ->
-            expect( Validate.type([], type_str, name_str) ).to.be.true
+            expect( Validate.as('array', [], name_str) ).to.be.true
 
           it 'should not validate a non array', ->
-            expect( Validate.type('a', type_str, name_str) ).to.be.false
+            expect( Validate.as('array', 'a', name_str) ).to.be.false
 
 
         describe 'Error', ->
 
           it 'should validate an array', ->
-            expect( Validate.typeMessage([], type_str, name_str) ).to.be.undefined
+            expect( Validate.toMessage('array', [], name_str) ).to.be.undefined
 
           it 'should return msg on non array with name', ->
-            fn = Validate.typeMessage('', type_str, name_str)
-            expect( fn ).to.equal 'wakka is not an array'
+            fn = Validate.toMessage('array', '', name_str)
+            expect( fn ).to.equal '"wakka" must be an array'
 
           it 'should return generic msg on non array without name', ->
-            fn = Validate.typeMessage('', type_str)
-            expect( fn ).to.equal 'Type is not array'
+            fn = Validate.toMessage('array', '')
+            expect( fn ).to.equal 'Value must be an array'
 
 
         describe 'Throw', ->
 
           it 'should validate an array', ->
-            expect( Validate.typeThrow([], type_str, name_str) ).to.be.true
+            expect( Validate.andThrow('array', [], name_str) ).to.be.true
 
           it 'should throw on non array with name', ->
-            fn = -> Validate.typeThrow('', type_str, name_str)
-            expect( fn ).to.throw ValidationError, 'wakka is not an array'
+            fn = -> Validate.andThrow('array', '', name_str)
+            expect( fn ).to.throw ValidationError, '"wakka" must be an array'
 
           it 'should throw on non array without name', ->
-            fn = -> Validate.typeThrow('', type_str)
-            expect( fn ).to.throw ValidationError, 'Type is not array'
+            fn = -> Validate.andThrow('array', '')
+            expect( fn ).to.throw ValidationError, 'Value must be an array'
 
 
 
@@ -70,133 +100,38 @@ describe 'Unit::Validate', ->
         describe 'Boolean', ->
 
           it 'should validate an boolean', ->
-            expect( Validate.type(true, type_str, name_str) ).to.be.true
+            expect( Validate.as('boolean', true, name_str) ).to.be.true
 
           it 'should not validate a non boolean', ->
-            expect( Validate.type('a', type_str, name_str) ).to.be.false
+            expect( Validate.as('boolean', 'a', name_str) ).to.be.false
 
 
         describe 'Message', ->
 
           it 'should validate an boolean', ->
-            expect( Validate.typeMessage(false, type_str, name_str) ).to.be.undefined
+            expect( Validate.toMessage('boolean', false, name_str) ).to.be.undefined
 
           it 'should return msg on non boolean with name', ->
-            fn = Validate.typeMessage('', type_str, name_str)
-            expect( fn ).to.equal 'michale is not a boolean'
+            fn = Validate.toMessage('boolean', '', name_str)
+            expect( fn ).to.equal '"michale" must be a boolean'
 
           it 'should return generic msg on non boolean without name', ->
-            fn = Validate.typeMessage('', type_str)
-            expect( fn ).to.equal 'Type is not boolean'
+            fn = Validate.toMessage('boolean', '')
+            expect( fn ).to.equal 'Value must be a boolean'
 
 
         describe 'Throw', ->
 
           it 'should validate an boolean', ->
-            expect( Validate.typeThrow(true, type_str, name_str) ).to.be.true
+            expect( Validate.andThrow('boolean', true, name_str) ).to.be.true
 
           it 'should throw on non boolean with name', ->
-            fn = -> Validate.typeThrow('', type_str, name_str)
-            expect( fn ).to.throw ValidationError, 'michale is not a boolean'
+            fn = -> Validate.andThrow('boolean', '', name_str)
+            expect( fn ).to.throw ValidationError, '"michale" must be a boolean'
 
           it 'should throw on non boolean without name', ->
-            fn = -> Validate.typeThrow('', type_str)
-            expect( fn ).to.throw ValidationError, 'Type is not boolean'
-
-
-
-      describe 'Defined', ->
-
-        type_str = 'defined'
-
-        describe 'Boolean', ->
-
-          it 'should validate a defined variable', ->
-            expect( Validate.type([], type_str, 'somevar') ).to.be.true
-
-          it 'should not validate a undefined value', ->
-            expect( Validate.type(undefined, type_str, 'somevar') ).to.be.false
-
-
-        describe 'Message', ->
-
-          it 'should not return a message for a defined variable', ->
-            expect( Validate.typeMessage(5, type_str, 'somevar') ).to.be.undefined
-
-          it 'should return msg on undefined variable with name', ->
-            fn = Validate.typeMessage(undefined, type_str, 'somevar')
-            expect( fn ).to.equal 'somevar is undefined'
-
-          it 'should return generic msg on non string without name', ->
-            fn = Validate.typeMessage(undefined, type_str)
-            expect( fn ).to.equal 'Value is undefined'
-
-
-        describe 'Throw', ->
-
-          it 'should not throw on a defined variable', ->
-            expect( Validate.typeThrow(5, type_str, 'somevar') ).to.be.true
-
-          it 'should throw on undefined variable with name', ->
-            fn = -> Validate.typeThrow(undefined, type_str, 'somevar')
-            expect( fn ).to.throw ValidationError, 'somevar is undefined'
-
-          it 'should throw on undefined variable without name', ->
-            fn = -> Validate.typeThrow(undefined, type_str)
-            expect( fn ).to.throw ValidationError, 'Value is undefined'
-
-
-
-      describe 'Empty', ->
-
-        type_str = 'empty'
-        name_str = 'label'
-
-        describe 'Boolean', ->
-
-          it 'should validate empty', ->
-            expect( Validate.type('', type_str, name_str) ).to.be.true
-
-          it 'should validate empty', ->
-            expect( Validate.type([], type_str, name_str) ).to.be.true
-
-          it 'should validate empty', ->
-            expect( Validate.type({}, type_str, name_str) ).to.be.true
-
-          it 'should validate empty', ->
-            expect( Validate.type(7, type_str, name_str) ).to.be.true
-
-          it 'should not validate a non empty', ->
-            expect( Validate.type('a', type_str, name_str) ).to.be.false
-
-
-        describe 'Message', ->
-
-          it 'should validate empty', ->
-            expect( Validate.typeMessage([], type_str, name_str) ).to.be.undefined
-
-          it 'should return msg on non empty with name', ->
-            fn = Validate.typeMessage('test', type_str, name_str)
-            expect( fn ).to.equal 'label is not empty'
-
-          it 'should return generic msg on non empty without name', ->
-            fn = Validate.typeMessage('test', type_str)
-            expect( fn ).to.equal 'Value is not empty'
-
-
-        describe 'Throw', ->
-
-          it 'should validate empty', ->
-            expect( Validate.typeThrow([], type_str, name_str) ).to.be.true
-
-          it 'should throw on non emtpy with name', ->
-            fn = -> Validate.typeThrow('test', type_str, name_str)
-            expect( fn ).to.throw ValidationError, 'label is not empty'
-
-          it 'should throw on non empty without name', ->
-            fn = -> Validate.typeThrow('test', type_str)
-            expect( fn ).to.throw ValidationError, 'Value is not empty'
-
+            fn = -> Validate.andThrow('boolean', '')
+            expect( fn ).to.throw ValidationError, 'Value must be a boolean'
 
 
       describe 'Integer', ->
@@ -207,41 +142,42 @@ describe 'Unit::Validate', ->
         describe 'Boolean', ->
 
           it 'should validate an integer', ->
-            expect( Validate.type(5, type_str, name_str) ).to.be.true
+            expect( Validate.as('integer', 5, name_str) ).to.be.true
 
           it 'should not validate a non integer', ->
-            expect( Validate.type(5.5, type_str, name_str) ).to.be.false
+            expect( Validate.as('integer', 5.5, name_str) ).to.be.false
 
           it 'should not validate a non integer', ->
-            expect( Validate.type('a', type_str, name_str) ).to.be.false
-
-
-        describe 'Throw', ->
-
-          it 'should validate an integer', ->
-            expect( Validate.typeThrow(6, type_str, name_str) ).to.be.true
-
-          it 'should throw on non integer with name', ->
-            fn = -> Validate.typeThrow('', type_str, name_str)
-            expect( fn ).to.throw ValidationError, 'the_int is not an integer'
-
-          it 'should throw on non integer without name', ->
-            fn = -> Validate.typeThrow('', type_str)
-            expect( fn ).to.throw ValidationError, 'Type is not integer'
+            expect( Validate.as('integer', 'a', name_str) ).to.be.false
 
 
         describe 'Message', ->
 
           it 'should validate an integer', ->
-            expect( Validate.typeMessage(7, type_str, name_str) ).to.be.undefined
+            expect( Validate.toMessage('integer', 7, name_str) ).to.be.undefined
 
           it 'should return msg on non integer with name', ->
-            fn = Validate.typeMessage('', type_str, name_str)
-            expect( fn ).to.equal 'the_int is not an integer'
+            fn = Validate.toMessage('integer', '', name_str)
+            expect( fn ).to.equal '"the_int" must be an integer'
 
           it 'should return generic msg on non integer without name', ->
-            fn = Validate.typeMessage('', type_str)
-            expect( fn ).to.equal 'Type is not integer'
+            fn = Validate.toMessage('integer', '')
+            expect( fn ).to.equal 'Value must be an integer'
+
+
+        describe 'Throw', ->
+
+          it 'should validate an integer', ->
+            expect( Validate.andThrow('integer', 6, name_str) ).to.be.true
+
+          it 'should throw on non integer with name', ->
+            fn = -> Validate.andThrow('integer', '', name_str)
+            expect( fn ).to.throw ValidationError, '"the_int" must be an integer'
+
+          it 'should throw on non integer without name', ->
+            fn = -> Validate.andThrow('integer', '')
+            expect( fn ).to.throw ValidationError, 'Value must be an integer'
+
 
 
       describe 'String', ->
@@ -252,83 +188,43 @@ describe 'Unit::Validate', ->
         describe 'Boolean', ->
 
           it 'should validate an string', ->
-            expect( Validate.type("test", type_str, name_str) ).to.be.true
+            expect( Validate.as(type_str, 'test', name_str) ).to.be.true
 
           it 'should not validate a non string', ->
-            expect( Validate.type(5, type_str, name_str) ).to.be.false
-
-
-        describe 'Throw', ->
-
-          it 'should validate an string', ->
-            expect( Validate.typeThrow('test', type_str, name_str) ).to.be.true
-
-          it 'should throw on non string with name', ->
-            fn = -> Validate.typeThrow(5, type_str, name_str)
-            expect( fn ).to.throw ValidationError, 'description is not a string'
-
-          it 'should throw on non string without name', ->
-            fn = -> Validate.typeThrow({}, type_str)
-            expect( fn ).to.throw ValidationError, 'Type is not string'
+            expect( Validate.as(type_str, 5, name_str) ).to.be.false
 
 
         describe 'Message', ->
 
           it 'should validate an string', ->
-            expect( Validate.typeMessage('test', type_str, name_str) ).to.be.undefined
+            expect( Validate.toMessage(type_str, 'test', name_str) ).to.be.undefined
 
           it 'should return msg on non string with name', ->
-            fn = Validate.typeMessage([], type_str, name_str)
-            expect( fn ).to.equal 'description is not a string'
+            fn = Validate.toMessage(type_str, [], name_str)
+            expect( fn ).to.equal '"description" must be a string'
 
           it 'should return generic msg on non string without name', ->
-            fn = Validate.typeMessage(true, type_str)
-            expect( fn ).to.equal 'Type is not string'
-
-
-      describe 'Undefined', ->
-
-        type_str = 'undefined'
-        name_str = 'somevar'
-
-        describe 'Boolean', ->
-
-          it 'should validate undefined', ->
-            expect( Validate.type(undefined, type_str, name_str) ).to.be.true
-
-          it 'should not validate a defined value', ->
-            expect( Validate.type(5, type_str, name_str) ).to.be.false
+            fn = Validate.toMessage(type_str, true)
+            expect( fn ).to.equal 'Value must be a string'
 
 
         describe 'Throw', ->
 
-          it 'should validate an undefined variable', ->
-            expect( Validate.typeThrow(undefined, type_str, name_str) ).to.be.true
+          it 'should validate an string', ->
+            expect( Validate.andThrow('string', 'test', name_str) ).to.be.true
 
-          it 'should throw on defined variable with name', ->
-            fn = -> Validate.typeThrow(5, type_str, name_str)
-            expect( fn ).to.throw ValidationError, 'somevar is defined'
+          it 'should throw on non string with name', ->
+            fn = -> Validate.andThrow('string', 5, name_str)
+            expect( fn ).to.throw ValidationError, '"description" must be a string'
 
-          it 'should throw on defined variable without name', ->
-            fn = -> Validate.typeThrow({}, type_str)
-            expect( fn ).to.throw ValidationError, 'Value is defined'
-
-
-        describe 'Message', ->
-
-          it 'should validate an undefined variable', ->
-            expect( Validate.typeMessage(undefined, type_str, name_str) ).to.be.undefined
-
-          it 'should return msg on defined variable with name', ->
-            fn = Validate.typeMessage([], type_str, name_str)
-            expect( fn ).to.equal 'somevar is defined'
-
-          it 'should return generic msg on non string without name', ->
-            fn = Validate.typeMessage(true, type_str)
-            expect( fn ).to.equal 'Value is defined'
+          it 'should throw on non string without name', ->
+            fn = -> Validate.andThrow('string', {})
+            expect( fn ).to.throw ValidationError, 'Value must be a string'
 
 
-    describe 'Length', ->
+
+
+    xdescribe 'Length', ->
 
       it 'should return true for the length of string', ->
         expect( Validate.length('a', 1, 256, 'thestring') ).to.be.true
@@ -386,161 +282,342 @@ describe 'Unit::Validate', ->
 
     describe 'Alpha', ->
 
-      it 'should return true alpha', ->
-        expect( Validate.alpha('ab', 'thestring') ).to.be.true
+      name_str = "thestring"
+      name_str_msg = "\"#{name_str}\" "
+      error_msg = "must only contain letters [ A-Z a-z ]"
 
       it 'should return true alpha', ->
-        expect( Validate.alpha('59!#$%', 'thestring') ).to.be.false
+        expect( Validate.string('alpha', 'ab', 'thestring') ).to.be.true
+
+      it 'should return true alpha', ->
+        expect( Validate.string('alpha', '59!#$%', 'thestring') ).to.be.false
 
       it 'should return error message', ->
-        msg = Validate.alphaMessage('ab', 'thestring')
+        msg = Validate.toMessage('alpha', 'ab', 'thestring')
         expect( msg ).to.be.undefined
 
       it 'should return error message', ->
-        msg = Validate.alphaMessage('a!b', 'thestring')
-        expect( msg ).to.be.equal '"thestring" must only contain [ A-Z a-z ]'
+        msg = Validate.toMessage('alpha', 'a!b', 'thestring')
+        expect( msg ).to.be.equal "#{name_str_msg}#{error_msg}"
 
       it 'should return error message', ->
-        msg = Validate.alphaMessage('a!b')
-        expect( msg ).to.be.equal 'Value must only contain [ A-Z a-z ]'
+        msg = Validate.toMessage('alpha', 'a!b')
+        expect( msg ).to.be.equal "Value #{error_msg}"
 
       it 'should return error', ->
-        res = Validate.alphaError('test', 'thestring')
+        res = Validate.toError('alpha', 'test', 'thestring')
         expect( res ).to.be.undefined
 
       it 'should return error', ->
-        err = Validate.alphaError('test!', 'thestring')
+        err = Validate.toError('alpha', 'test!', 'thestring')
         expect( err ).to.be.instanceOf(ValidationError)
-        expect( err.message ).to.equal '"thestring" must only contain [ A-Z a-z ]'
+        expect( err.message ).to.equal "#{name_str_msg}#{error_msg}"
 
       it 'should not throw error', ->
-        expect( Validate.alphaThrow('test', 'thestring') ).to.be.true
+        expect( Validate.andThrow('alpha', 'test', 'thestring') ).to.be.true
 
       it 'should throw error', ->
-        fn = -> Validate.alphaThrow('test!', 'thestring')
-        expect( fn ).to.throw ValidationError, '"thestring" must only contain [ A-Z a-z ]'
+        fn = -> Validate.andThrow('alpha', 'test!', 'thestring')
+        expect( fn ).to.throw ValidationError, "#{name_str_msg}#{error_msg}"
 
 
     describe 'Numeric', ->
 
       name_str = "thestring"
       name_str_msg = "\"#{name_str}\" "
-      error_msg = "must only contain [ 0-9 ]"
+      error_msg = "must only contain numbers [ 0-9 ]"
 
       it 'should return true numeric', ->
-        expect( Validate.numeric('0939393', name_str) ).to.be.true
+        expect( Validate.string('numeric', '0939393', name_str) ).to.be.true
 
       it 'should return true numeric', ->
-        expect( Validate.numeric('59!#$%', name_str) ).to.be.false
+        expect( Validate.string('numeric', '59!#$%', name_str) ).to.be.false
 
       it 'should return error message', ->
-        msg = Validate.numericMessage('2323', name_str)
+        msg = Validate.toMessage('numeric', '2323', name_str)
         expect( msg ).to.be.undefined
 
       it 'should return error message', ->
-        msg = Validate.numericMessage('a!b', name_str)
+        msg = Validate.toMessage('numeric', 'a!b', name_str)
         expect( msg ).to.be.equal "#{name_str_msg}#{error_msg}"
 
       it 'should return error message', ->
-        msg = Validate.numericMessage('a!b')
+        msg = Validate.toMessage('numeric', 'a!b')
         expect( msg ).to.be.equal "Value #{error_msg}"
 
       it 'should return error', ->
-        res = Validate.numericError('123453', name_str)
+        res = Validate.toError('numeric', '123453', name_str)
         expect( res ).to.be.undefined
 
       it 'should return error', ->
-        err = Validate.numericError('aaas', name_str)
+        err = Validate.toError('numeric', 'aaas', name_str)
         expect( err ).to.be.instanceOf(ValidationError)
         expect( err.message ).to.equal "#{name_str_msg}#{error_msg}"
 
       it 'should not throw error', ->
-        expect( Validate.numericThrow('2', name_str) ).to.be.true
+        expect( Validate.andThrow('numeric', '2', name_str) ).to.be.true
 
       it 'should throw error', ->
-        fn = -> Validate.numericThrow('test!', name_str)
+        fn = -> Validate.andThrow('numeric', 'test!', name_str)
         expect( fn ).to.throw ValidationError, "#{name_str_msg}#{error_msg}"
 
 
-    describe 'Alpha Numeric', ->
+    describe 'alphaNumeric', ->
 
       name_str = "thestring"
       name_str_msg = "\"#{name_str}\" "
-      error_msg = "must only contain [ A-Z a-z 0-9 ]"
+      error_msg = "must only contain letters and numbers [ A-Z a-z 0-9 ]"
 
       it 'should return true alpha numeric', ->
-        expect( Validate.alphaNumeric('ab', name_str) ).to.be.true
+        expect( Validate.string('alphaNumeric', 'ab', name_str) ).to.be.true
 
       it 'should return true alpha numeric', ->
-        expect( Validate.alphaNumeric('59!#$%', name_str) ).to.be.false
+        expect( Validate.string('alphaNumeric', '59!#$%', name_str) ).to.be.false
 
       it 'should return error message', ->
-        msg = Validate.alphaNumericMessage('ab', name_str)
+        msg = Validate.toMessage('alphaNumeric', 'ab', name_str)
         expect( msg ).to.be.undefined
 
       it 'should return error message', ->
-        msg = Validate.alphaNumericMessage('a!b', name_str)
+        msg = Validate.toMessage('alphaNumeric', 'a!b', name_str)
         expect( msg ).to.be.equal "#{name_str_msg}#{error_msg}"
 
       it 'should return error message', ->
-        msg = Validate.alphaNumericMessage('a!b')
+        msg = Validate.toMessage('alphaNumeric', 'a!b')
         expect( msg ).to.be.equal "Value #{error_msg}"
 
       it 'should return error', ->
-        res = Validate.alphaNumericError('test', name_str)
+        res = Validate.toError('alphaNumeric', 'test', name_str)
         expect( res ).to.be.undefined
 
       it 'should return error', ->
-        err = Validate.alphaNumericError('test!', name_str)
+        err = Validate.toError('alphaNumeric', 'test!', name_str)
         expect( err ).to.be.instanceOf(ValidationError)
         expect( err.message ).to.equal "#{name_str_msg}#{error_msg}"
 
       it 'should not throw error', ->
-        expect( Validate.alphaNumericThrow('test', name_str) ).to.be.true
+        expect( Validate.andThrow('alphaNumeric', 'test', name_str) ).to.be.true
 
       it 'should throw error', ->
-        fn = -> Validate.alphaNumericThrow('test!', name_str)
+        fn = -> Validate.andThrow('alphaNumeric', 'test!', name_str)
         expect( fn ).to.throw ValidationError, "#{name_str_msg}#{error_msg}"
 
 
-    describe 'Alpha Numeric Dash Underscore', ->
+    describe 'alphaNumericDashUnderscore', ->
 
-      err_suffix = "must only contain alphanumeric, dash and underscore [ A-Z a-z 0-9 _ - ]"
+      err_suffix = "must only contain letters, numbers, dash and underscore [ A-Z a-z 0-9 _ - ]"
       name_str = 'thestring'
 
       it 'should return true alpha numeric', ->
-        expect( Validate.alphaNumericDashUnderscore('ab', name_str) ).to.be.true
+        expect( Validate.string('alphaNumericDashUnderscore', 'ab', name_str) ).to.be.true
 
       it 'should return true alpha numeric', ->
-        expect( Validate.alphaNumericDashUnderscore('a!b', name_str) ).to.be.false
+        expect( Validate.string('alphaNumericDashUnderscore', 'a!b', name_str) ).to.be.false
 
       it 'should return error message', ->
-        msg = Validate.alphaNumericDashUnderscoreMessage('ab', name_str)
+        msg = Validate.toMessage('alphaNumericDashUnderscore', 'ab', name_str)
         expect( msg ).to.be.undefined
 
       it 'should return error message', ->
-        msg = Validate.alphaNumericDashUnderscoreMessage('a!b', name_str)
+        msg = Validate.toMessage('alphaNumericDashUnderscore', 'a!b', name_str)
         expect( msg ).to.be.equal "\"#{name_str}\" #{err_suffix}"
 
       it 'should return error', ->
-        res = Validate.alphaNumericDashUnderscoreError('test', name_str)
+        res = Validate.toError('alphaNumericDashUnderscore', 'test', name_str)
         expect( res ).to.be.undefined
 
       it 'should return error', ->
-        err = Validate.alphaNumericDashUnderscoreError('test!', name_str)
+        err = Validate.toError('alphaNumericDashUnderscore', 'test!', name_str)
         expect( err ).to.be.instanceOf(ValidationError)
         expect( err.message ).to.equal "\"#{name_str}\" #{err_suffix}"
 
       it 'should throw error', ->
-        fn = -> Validate.alphaNumericDashUnderscoreThrow('test', name_str)
+        fn = -> Validate.andThrow('alphaNumericDashUnderscore', 'test', name_str)
         expect( fn ).to.not.throw
 
       it 'should throw error', ->
-        fn = -> Validate.alphaNumericDashUnderscoreThrow('test!', name_str)
+        fn = -> Validate.andThrow('alphaNumericDashUnderscore', 'test!', name_str)
         expect( fn ).to.throw ValidationError, "\"#{name_str}\" #{err_suffix}"
 
 
 
+    describe 'Defined', ->
+
+      describe 'Boolean', ->
+
+        it 'should validate a defined variable', ->
+          expect( Validate.as('defined', [], 'somevar') ).to.be.true
+
+        it 'should not validate a undefined value', ->
+          expect( Validate.as('defined', undefined, 'somevar') ).to.be.false
+
+
+      describe 'Message', ->
+
+        it 'should not return a message for a defined variable', ->
+          expect( Validate.toMessage('defined', 5, 'somevar') ).to.be.undefined
+
+        it 'should return msg on undefined variable with name', ->
+          fn = Validate.toMessage('defined', undefined, 'somevar')
+          expect( fn ).to.equal '"somevar" must be defined'
+
+        it 'should return generic msg on non string without name', ->
+          fn = Validate.toMessage('defined', undefined)
+          expect( fn ).to.equal 'Value must be defined'
+
+
+      describe 'Throw', ->
+
+        it 'should not throw on a defined variable', ->
+          expect( Validate.andThrow('defined', 5, 'somevar') ).to.be.true
+
+        it 'should throw on undefined variable with name', ->
+          fn = -> Validate.andThrow('defined', undefined, 'somevar')
+          expect( fn ).to.throw ValidationError, '"somevar" must be defined'
+
+        it 'should throw on undefined variable without name', ->
+          fn = -> Validate.andThrow('defined', undefined)
+          expect( fn ).to.throw ValidationError, 'Value must be defined'
+
+
+
+    describe 'Empty', ->
+
+      describe 'Boolean', ->
+
+        it 'should validate empty', ->
+          expect( Validate.as('empty', '', 'label') ).to.be.true
+
+        it 'should validate empty', ->
+          expect( Validate.as('empty', [], 'label') ).to.be.true
+
+        it 'should validate empty', ->
+          expect( Validate.as('empty', {}, 'label') ).to.be.true
+
+        it 'should validate empty', ->
+          expect( Validate.as('empty', 7, 'label') ).to.be.true
+
+        it 'should not validate a non empty', ->
+          expect( Validate.as('empty', 'a', 'label') ).to.be.false
+
+      describe 'Message', ->
+
+        it 'should validate empty', ->
+          expect( Validate.toMessage('empty', [], 'label') ).to.be.undefined
+
+        it 'should return msg on non empty with name', ->
+          fn = Validate.toMessage('empty', 'test', 'label')
+          expect( fn ).to.equal '"label" must be empty'
+
+        it 'should return generic msg on non empty without name', ->
+          fn = Validate.toMessage('empty', 'test')
+          expect( fn ).to.equal 'Value must be empty'
+
+      describe 'Throw', ->
+
+        it 'should validate empty', ->
+          expect( Validate.andThrow('empty', [], 'label') ).to.be.true
+
+        it 'should throw on non emtpy with name', ->
+          fn = -> Validate.andThrow('empty', 'test', 'label')
+          expect( fn ).to.throw ValidationError, '"label" must be empty'
+
+        it 'should throw on non empty without name', ->
+          fn = -> Validate.andThrow('empty', 'test')
+          expect( fn ).to.throw ValidationError, 'Value must be empty'
+
+
+    describe 'notEmpty', ->
+
+      describe 'Boolean', ->
+
+        it 'should validate empty string', ->
+          expect( Validate.as('notEmpty', '', 'label') ).to.be.false
+
+        it 'should validate empty array', ->
+          expect( Validate.as('notEmpty', [], 'label') ).to.be.false
+
+        it 'should validate empty object', ->
+          expect( Validate.as('notEmpty', {}, 'label') ).to.be.false
+
+        it 'should validate empty(?) number', ->
+          expect( Validate.as('notEmpty', 7, 'label') ).to.be.false
+
+        it 'should validate a non empty string', ->
+          expect( Validate.as('notEmpty', 'a', 'label') ).to.be.true
+
+      describe 'Message', ->
+
+        it 'should validate not empty object', ->
+          expect( Validate.toMessage('notEmpty', {a:1}, 'label') ).to.be.undefined
+
+        it 'should return msg on non empty with name', ->
+          fn = Validate.toMessage('notEmpty', '', 'label')
+          expect( fn ).to.equal '"label" must not be empty'
+
+        it 'should return generic msg on non empty without name', ->
+          fn = Validate.toMessage('notEmpty', [])
+          expect( fn ).to.equal 'Value must not be empty'
+
+      describe 'Throw', ->
+
+        it 'should validate non empty', ->
+          expect( Validate.andThrow('notEmpty', 'iamnotempty', 'label') ).to.be.true
+
+        it 'should throw on emtpy with name', ->
+          fn = -> Validate.andThrow('notEmpty', {}, 'label')
+          expect( fn ).to.throw ValidationError, '"label" must not be empty'
+
+        it 'should throw on empty without name', ->
+          fn = -> Validate.andThrow('notEmpty', [])
+          expect( fn ).to.throw ValidationError, 'Value must not be empty'
+
+
+    describe 'Undefined', ->
+
+      type_str = 'undefined'
+      name_str = 'somevar'
+
+      describe 'Boolean', ->
+
+        it 'should validate undefined', ->
+          expect( Validate.as('undefined', undefined, name_str) ).to.be.true
+
+        it 'should not validate a defined value', ->
+          expect( Validate.as('undefined', 5, name_str) ).to.be.false
+
+      describe 'Message', ->
+
+        it 'should validate an undefined variable', ->
+          expect( Validate.toMessage('undefined', undefined, name_str) ).to.be.undefined
+
+        it 'should return msg on defined variable with name', ->
+          fn = Validate.toMessage('undefined', [], name_str)
+          expect( fn ).to.equal '"somevar" must be undefined'
+
+        it 'should return generic msg on non string without name', ->
+          fn = Validate.toMessage('undefined', true)
+          expect( fn ).to.equal 'Value must be undefined'
+
+      describe 'Throw', ->
+
+        it 'should validate an undefined variable', ->
+          expect( Validate.andThrow('undefined', undefined, name_str) ).to.be.true
+
+        it 'should throw on defined variable with name', ->
+          fn = -> Validate.andThrow('undefined', 5, name_str)
+          expect( fn ).to.throw ValidationError, '"somevar" must be undefined'
+
+        it 'should throw on defined variable without name', ->
+          fn = -> Validate.andThrow('undefined', {})
+          expect( fn ).to.throw ValidationError, 'Value must be undefined'
+
+
+
+
+
+
+  # ## Instance
 
   describe 'Instance', ->
 
@@ -603,7 +680,7 @@ describe 'Unit::Validate', ->
 
       before ->
         validate = new Validate()
-        validate.add('type','value','string','wakka')
+        validate.add('string','value','wakka')
 
       it 'should run the tests', ->
         expect( validate.run() ).to.be.ok
@@ -618,7 +695,7 @@ describe 'Unit::Validate', ->
 
       before ->
         validate = new Validate()
-        validate.add('type', 5, 'string', 'wakka')
+        validate.add('string', 5, 'wakka')
 
       it 'should run the tests', ->
         fn = -> validate.run()
@@ -636,7 +713,7 @@ describe 'Unit::Validate', ->
       before ->
         validate = new Validate({errors: true})
           .add('length', 'sa', 1, 256, 'dlen')
-          .add('type', 5, 'string', 'dtype')
+          .add('string', 5, 'dtype')
           .add('alphaNumericDashUnderscore', 'a!b', 'dstr')
 
       it 'should run the tests', ->
@@ -648,11 +725,11 @@ describe 'Unit::Validate', ->
 
       it 'should have a validation error for dtype', ->
         expect( errors[0] ).to.be.an.instanceOf ValidationError
-        expect( errors[0].message ).to.equal 'dtype is not a string'
+        expect( errors[0].message ).to.equal '"dtype" must be a string'
 
       it 'should have a second validation error for dstr', ->
         expect( errors[1] ).to.be.an.instanceOf ValidationError
-        expect( errors[1].message ).to.equal '"dstr" must only contain alphanumeric, dash and underscore [ A-Z a-z 0-9 _ - ]'
+        expect( errors[1].message ).to.equal '"dstr" must only contain letters, numbers, dash and underscore [ A-Z a-z 0-9 _ - ]'
 
       it 'has the right number of errors', ->
         expect( errors.length ).to.eql 2
@@ -666,7 +743,7 @@ describe 'Unit::Validate', ->
       before ->
         validate = new Validate({messages: true})
           .add('length', 'sa', 1, 256, 'dlen')
-          .add('type', 5, 'string', 'dtype')
+          .add('string', 5, 'dtype')
           .add('alphaNumericDashUnderscore', 'a!b', 'dstr')
 
       it 'should run the tests', ->
@@ -677,10 +754,10 @@ describe 'Unit::Validate', ->
         expect( errors ).to.be.an 'array'
 
       it 'has a validation error', ->
-        expect( errors[0] ).to.equal 'dtype is not a string'
+        expect( errors[0] ).to.equal '"dtype" must be a string'
 
       it 'has a validation error', ->
-        expect( errors[1] ).to.equal '"dstr" must only contain alphanumeric, dash and underscore [ A-Z a-z 0-9 _ - ]'
+        expect( errors[1] ).to.equal '"dstr" must only contain letters, numbers, dash and underscore [ A-Z a-z 0-9 _ - ]'
 
       it 'has the right number of errors', ->
         expect( errors.length ).to.eql 2
@@ -695,7 +772,7 @@ describe 'Unit::Validate', ->
       before ->
         validate = new Validate({results: true})
           .add('length', 'sa', 1, 256, 'dlen')
-          .add('type', 5, 'string', 'dtype')
+          .add('string', 5, 'dtype')
           .add('alphaNumericDashUnderscore', 'a!b', 'dstr')
 
       it 'should run the tests', ->
