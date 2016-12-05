@@ -241,7 +241,7 @@ describe 'App Requests', ->
             expect( result.res.text ).to.match /^\{/
             expect( result.res.body ).to.contain.key('error')
             err = result.res.body.error
-            expect( err ).to.have.property('message').and.match /Validation of "store" url param failed. Value must only contain alphanumeric, dash and underscore/
+            expect( err ).to.have.property('message').and.match /Validation of "store" url param failed. Value must only contain/
             expect( err ).to.have.property('name').and.equal 'HttpError'
             expect( err ).to.have.property('status').and.equal 400
             expect( result.res.statusCode ).to.eql 400
@@ -254,7 +254,7 @@ describe 'App Requests', ->
             expect( result.res.statusCode ).to.eql 400
             expect( result.res.body ).to.contain.key('error')
             err = result.res.body.error
-            expect( err ).to.have.property('message').and.match /Validation of "entity" url param failed. Value must only contain alphanumeric, dash and underscore/
+            expect( err ).to.have.property('message').and.match /Validation of "entity" url param failed. Value must only contain/
             expect( err ).to.have.property('name').and.equal('HttpError')
             expect( err ).to.have.property('status').and.equal(400)
 
