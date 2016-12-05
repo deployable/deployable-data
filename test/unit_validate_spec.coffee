@@ -43,6 +43,68 @@ describe 'Unit::Validate', ->
       it 'throws number 1 between 2,5  true', ->
         fn = -> Validate.andThrow('between', 1, 2, 5)
         expect( fn ).to.throw ValidationError, /Value must be between 2 and 5/
+      
+      it 'test types buffer', ->
+        expect( Validate.a('buffer', new Buffer('')) ).to.be.true
+      
+      it 'test types date', ->
+        expect( Validate.a('date', new Date()) ).to.be.true
+      
+      it 'test types element', ->
+        class Element
+          nodeType: 1
+        expect( Validate.an('element', new Element()) ).to.be.true
+      
+      it 'test types error', ->
+        expect( Validate.an('error', new Error()) ).to.be.true
+      
+      it 'test types finite', ->
+        expect( Validate.a('finite', 3) ).to.be.true
+      
+      it 'test types function', ->
+        expect( Validate.a('function', new Function()) ).to.be.true
+      
+      it 'test types Map', ->
+        expect( Validate.a('map', new Map()) ).to.be.true
+      
+      it 'test types Nan', ->
+        expect( Validate.a('nan', NaN) ).to.be.true
+
+      it 'test types number', ->
+        expect( Validate.a('number', 3) ).to.be.true
+
+      it 'test types object', ->
+        expect( Validate.a('object', {}) ).to.be.true
+
+      it 'test types plainobject', ->
+        expect( Validate.a('plainobject', {}) ).to.be.true
+
+      it 'test types regexp', ->
+        expect( Validate.a('regexp', /\w/) ).to.be.true
+
+      it 'test types safeinteger', ->
+        expect( Validate.a('safeinteger', 5) ).to.be.true
+
+      it 'test types string', ->
+        expect( Validate.a('string', '') ).to.be.true
+
+      it 'test types symbol', ->
+        expect( Validate.a('symbol', Symbol.iterator) ).to.be.true
+
+      it 'test types typedarray', ->
+        expect( Validate.a('typedarray', new Uint8Array) ).to.be.true
+
+      it 'test types weakmap', ->
+        expect( Validate.a('weakmap', new WeakMap()) ).to.be.true
+
+      it 'test types weakset', ->
+        expect( Validate.a('weakset', new WeakSet()) ).to.be.true
+
+      it 'test types nil', ->
+        expect( Validate.a('nil', undefined ) ).to.be.true
+
+      it 'test types notNil', ->
+        expect( Validate.a('notNil', 5 ) ).to.be.true
 
 
     # Types moved into new test world
