@@ -21,20 +21,24 @@
     "body-parser": "1.15.2",
     "debug": "^2.0",
     "express": "~4.14.0",
+    "express-winston": "^2.1.0",
     "lodash": "~4.17.2",
     "mongodb": "2.2.12",
     "nanomsg": "3.2.3",
     "uuid": "~3.0.1",
+    "winston": "^2.3.0",
     "zmq": "2.15.3"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
-    "coffee-script": "^1.10.0",
+    "coffee-script": "~1.12.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.2.0",
+    "mockgo": "^1.1.6",
     "sinon": "^1.17.3",
-    "supertest": "^2.0.1"
+    "supertest": "^2.0.1",
+    "test-console": "^1.0.0"
   }
 }
