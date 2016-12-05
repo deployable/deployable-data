@@ -802,7 +802,7 @@ describe 'Unit::Validate', ->
         expect( validate.errors ).to.eql []
 
 
-    describe 'throw simples', ->
+    describe 'throw mode simples', ->
 
       validate = null
 
@@ -818,13 +818,45 @@ describe 'Unit::Validate', ->
         expect( validate.errors ).to.eql []
 
 
-    describe 'throw extended', ->
+    describe 'throw mode simples with throw option', ->
+
+      validate = null
+
+      before ->
+        validate = new Validate({ throw: true })
+        validate.add('string', 5, 'wakka')
+
+      it 'should run the tests', ->
+        fn = -> validate.run()
+        expect( fn ).to.throw ValidationError
+
+      it 'should run the errors', ->
+        expect( validate.errors ).to.eql []
+
+
+    describe 'messages mode simples', ->
+
+      validate = null
+
+      before ->
+        validate = new Validate({ messages: true })
+        validate.add('string', 5, 'wakka')
+
+      it 'should run the tests', ->
+        expect( validate.run() ).to.be.ok
+
+      it 'should run the errors', ->
+        expect( validate.errors.length ).to.eql 1
+        expect( validate.errors[0] ).to.match /wakka/
+
+
+    describe 'errors mode extended', ->
 
       validate = null
       errors = null
 
       before ->
-        validate = new Validate({errors: true})
+        validate = new Validate({ errors: true })
           .add('length', 'sa', 1, 256, 'dlen')
           .add('string', 5, 'dtype')
           .add('alphaNumericDashUnderscore', 'a!b', 'dstr')
