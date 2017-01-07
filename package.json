@@ -1,7 +1,7 @@
 {
-  "name": "data-nanotest",
+  "name": "deployable-data",
   "version": "1.0.0",
-  "description": "nanomsg for data access platform",
+  "description": "Data access platform",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
@@ -13,11 +13,11 @@
     "data",
     "nanomsg"
   ],
-  "author": "matt@deployable.co",
+  "author": "Matt Hoyle <code aatt deployable.co",
   "license": "MIT",
   "dependencies": {
-    "avsc": "4.1.10",
-    "bluebird": "3.4.6",
+    "avsc": "^4.1.11",
+    "bluebird": "^3.4.7",
     "body-parser": "1.15.2",
     "debug": "^2.0",
     "deployable-errors": "^0.5.0",
@@ -25,8 +25,8 @@
     "express": "~4.14.0",
     "express-winston": "^2.1.0",
     "lodash": "~4.17.2",
-    "mongodb": "2.2.12",
-    "nanomsg": "3.2.3",
+    "mongodb": "^2.2.19",
+    "nanomsg": "^3.2.4",
     "uuid": "~3.0.1",
     "winston": "^2.3.0",
     "zmq": "2.15.3"
