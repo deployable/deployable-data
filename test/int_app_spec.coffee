@@ -56,7 +56,7 @@ describe 'App Requests', ->
           expect( result.res.statusCode ).to.equal 200
           expect( result.res.body ).to.contain.key('app')
           app_info = result.res.body.app
-          expect( app_info ).to.have.property('name').and.equal('data-nanotest')
+          expect( app_info ).to.have.property('name').and.equal('deployable-data')
           expect( app_info ).to.have.property('version').and.match(/^\d+\.\d+\.\d+/)
 
       entity_url = "#{app_url_prefix}/store/a/entity/newentity"
@@ -345,5 +345,5 @@ describe 'App Requests', ->
           expect( result.res.statusCode ).to.equal 200
           expect( result.res.body ).to.contain.key('app')
           app_info = result.res.body.app
-          expect( app_info ).to.have.property('name').and.equal('data-nanotest')
+          expect( app_info ).to.have.property('name').and.equal('deployable-data')
           expect( app_info ).to.have.property('version').and.match(/^\d+\.\d+\.\d+/)
