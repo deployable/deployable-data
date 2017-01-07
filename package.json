@@ -1,7 +1,7 @@
 {
   "name": "data-nanotest",
   "version": "1.0.0",
-  "description": "testing nanomsg for data access platform",
+  "description": "nanomsg for data access platform",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
