@@ -1,3 +1,4 @@
 node_modules/
+coverage/lcov-report/
 npm-debug.log
 yarn-error.log
