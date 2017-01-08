@@ -415,19 +415,23 @@ depd@~1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/depd/-/depd-1.1.0.tgz#e1bd82c6aab6ced965b97b88b17ed3e528ca18c3"
 
-deployable-config@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/deployable-config/-/deployable-config-0.4.0.tgz#bbe89577e0f3623620c3f8642b44c1f5759427a6"
+deployable-config@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/deployable-config/-/deployable-config-0.5.0.tgz#f289abf861026263ee1fe5c882287c4e4b912207"
   dependencies:
     bluebird "^3.0.1"
     debug "^2"
-    deployable-errors "^0.5.3"
+    deployable-errors "^0.6.0"
     js-yaml "^3.7.0"
     lodash "^4.17.4"
 
-deployable-errors@^0.5.0, deployable-errors@^0.5.3, deployable-errors@~0.5.0:
+deployable-errors@^0.5.0, deployable-errors@~0.5.0:
   version "0.5.3"
   resolved "https://registry.npmjs.org/deployable-errors/-/deployable-errors-0.5.3.tgz#b25c1624b54ac933fd1f21d836e6c6d693de8d8c"
+
+deployable-errors@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/deployable-errors/-/deployable-errors-0.6.0.tgz#059d5680db45f413f9239e3c07c287369df6d987"
 
 deployable-validate@^0.1.4:
   version "0.1.4"
