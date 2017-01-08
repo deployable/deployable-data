@@ -7,14 +7,17 @@
     "test": "mocha",
     "test:int": "mocha test/int_*",
     "test:unit": "mocha test/unit_*",
-    "test:coverage": "istanbul cover _mocha"
+    "test:func": "mocha test/func_*",
+    "test:coverage": "istanbul cover _mocha",
+    "npm:testing": "npm publish -t testing",
+    "npm:publish": "npm publish"
   },
   "keywords": [
     "data",
     "nanomsg"
   ],
   "author": "Matt Hoyle <code aatt deployable.co",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "avsc": "^4.1.11",
     "bluebird": "^3.4.7",
