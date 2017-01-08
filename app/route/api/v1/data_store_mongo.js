@@ -1,8 +1,8 @@
 const Promise     = require('bluebird')
 const debug       = require('debug')('dply:data:data_store_mongo')
 const _           = require('lodash')
-const Errors      = require('../../../../lib/dply-errors')
-const config      = require('../../../../lib/config').instance()
+const Errors      = require('../../../../lib/errors')
+const config      = require('../../../../lib/config')
 const logger      = console
 const mongodb     = Promise.promisifyAll(require('mongodb'))
 

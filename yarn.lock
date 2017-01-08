@@ -101,7 +101,7 @@ bl@^1.0.0:
   dependencies:
     readable-stream "^2.0.5"
 
-bluebird@^3.4.7:
+bluebird@^3.0.1, bluebird@^3.4.7:
   version "3.4.7"
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.4.7.tgz#f72d760be09b7f76d08ed8fae98b289a8d05fab3"
 
@@ -327,7 +327,7 @@ debug@2.2.0, debug@~2.2.0:
   dependencies:
     ms "0.7.1"
 
-debug@^2.0, debug@^2.2.0:
+debug@^2, debug@^2.0, debug@^2.2.0:
   version "2.6.0"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
   dependencies:
@@ -415,7 +415,17 @@ depd@~1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/depd/-/depd-1.1.0.tgz#e1bd82c6aab6ced965b97b88b17ed3e528ca18c3"
 
-deployable-errors@^0.5.0, deployable-errors@~0.5.0:
+deployable-config@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.npmjs.org/deployable-config/-/deployable-config-0.4.0.tgz#bbe89577e0f3623620c3f8642b44c1f5759427a6"
+  dependencies:
+    bluebird "^3.0.1"
+    debug "^2"
+    deployable-errors "^0.5.3"
+    js-yaml "^3.7.0"
+    lodash "^4.17.4"
+
+deployable-errors@^0.5.0, deployable-errors@^0.5.3, deployable-errors@~0.5.0:
   version "0.5.3"
   resolved "https://registry.npmjs.org/deployable-errors/-/deployable-errors-0.5.3.tgz#b25c1624b54ac933fd1f21d836e6c6d693de8d8c"
 
@@ -947,7 +957,7 @@ istanbul@^0.4.5:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-yaml@3.x:
+js-yaml@3.x, js-yaml@^3.7.0:
   version "3.7.0"
   resolved "https://registry.npmjs.org/js-yaml/-/js-yaml-3.7.0.tgz#5c967ddd837a9bfdca5f2de84253abe8a1c03b80"
   dependencies:
@@ -1048,7 +1058,7 @@ lodash.keys@^3.0.0:
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
 
-lodash@^4.14.0, lodash@~4.17.2:
+lodash@^4.14.0, lodash@^4.17.4, lodash@~4.17.2:
   version "4.17.4"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 

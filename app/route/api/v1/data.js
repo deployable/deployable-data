@@ -3,8 +3,9 @@ const debug       = require('debug')('dply:data:route:api:v1:data')
 const router      = require('express').Router()
 const bodyParser  = require('body-parser')
 const _           = require('lodash')
-const Errors      = require('../../../../lib/errors_dply')
-const config      = require('../../../../lib/config').instance()
+
+const Errors      = require('../../../../lib/errors_data')
+const config      = require('../../../../lib/config')
 const logger      = console
 
 const DataAPI = require('../../../../lib/data_api')
